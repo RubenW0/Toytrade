@@ -1,0 +1,64 @@
+﻿@model List<BusinessLogicLayer.DTOs.ToyDTO>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toy List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .toy-card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+            .toy-card h3 {
+                margin-top: 0;
+            }
+
+            .toy-card p {
+                margin: 5px 0;
+            }
+
+        .toy-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Toy List</h1>
+
+        @foreach (var toy in Model)
+        {
+            <div class="toy-card">
+                <img src="https://via.placeholder.com/150" alt="@toy.Name" class="toy-image">
+                <h3>@toy.Name</h3>
+                <p><strong>Condition:</strong> @toy.Condition</p>
+                <p><strong>Owner:</strong> @toy.Name</p>
+                <p><a href="#">View Details</a></p>
+            </div>
+        }
+    </div>
+
+</body>
+</html>
