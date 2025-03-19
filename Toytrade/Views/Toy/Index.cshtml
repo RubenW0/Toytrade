@@ -13,10 +13,12 @@
             padding: 0;
             background-color: #f4f4f4;
         }
+
         .container {
             width: 80%;
             margin: 20px auto;
         }
+
         .toy-card {
             background-color: white;
             padding: 15px;
@@ -24,12 +26,15 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        .toy-card h3 {
-            margin-top: 0;
-        }
-        .toy-card p {
-            margin: 5px 0;
-        }
+
+            .toy-card h3 {
+                margin-top: 0;
+            }
+
+            .toy-card p {
+                margin: 5px 0;
+            }
+
         .toy-image {
             width: 150px;
             height: 150px;
@@ -49,7 +54,7 @@
                 <img src="https://via.placeholder.com/150" alt="@toy.Name" class="toy-image">
                 <h3>@toy.Name</h3>
                 <p><strong>Condition:</strong> @toy.Condition</p>
-                <p><strong>Owner:</strong> @toy.Name</p>
+                <p><strong>Owner:</strong> @toy.UserId</p>
                 <p><a href="#">View Details</a></p>
             </div>
         }

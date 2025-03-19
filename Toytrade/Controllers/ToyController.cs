@@ -12,7 +12,7 @@ namespace PresentationLayer.Controllers
             _toyService = toyService;
         }
 
-        public IActionResult Toys()
+        public IActionResult Index()
         {
             var toys = _toyService.GetAllToys();
             return View(toys);

@@ -12,6 +12,6 @@ namespace BusinessLogicLayer.DTOs
         public string Name { get; set; }
         public string Image { get; set; }
         public string Condition { get; set; }
-        public string OwnerId { get; set; }
+        public int UserId { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace DataAccessLayer.Repositorys
         public List<ToyDTO> GetAllToys()
         {
             var toys = new List<ToyDTO>();
-            string query = "SELECT id, name, image, 'condition', owner_id FROM Toy";
+            string query = "SELECT id, name, image, `condition`, user_id FROM Toy";
 
             using (var connection = new MySqlConnection(_connectionString))
             {
@@ -36,7 +36,7 @@ namespace DataAccessLayer.Repositorys
                                 Name = reader.GetString("name"),
                                 Image = reader.IsDBNull(reader.GetOrdinal("image")) ? null : reader.GetString("image"),
                                 Condition = reader.GetString("condition"),
-                                //OwnerId = reader.GetInt32("owner_id")
+                                UserId = reader.GetInt32("user_id")
                             });
                         }
                     }
