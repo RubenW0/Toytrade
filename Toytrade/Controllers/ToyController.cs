@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Services;
+﻿using BusinessLogicLayer.DTOs;
+using BusinessLogicLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.ViewModels;
 
@@ -28,5 +29,33 @@ namespace PresentationLayer.Controllers
 
             return View(toyViewModels);
         }
+
+        [HttpGet]
+        public IActionResult AddToy()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddToy(ToyViewModel model)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
+
+            var toyDTO = new ToyDTO
+            {
+                Name = model.Name,
+                Image = model.Image,
+                Condition = model.Condition,
+                UserId = 1 // TEMPORARY, replace with user session id
+            };
+
+            _toyService.AddToy(toyDTO);
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

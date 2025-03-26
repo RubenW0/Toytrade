@@ -27,5 +27,11 @@ namespace BusinessLogicLayer.Services
 
             return toys;
         }
+
+        public void AddToy(ToyDTO toy)
+        {
+            _toyRepository.AddToy(toy);
+        }
+
     }
 }

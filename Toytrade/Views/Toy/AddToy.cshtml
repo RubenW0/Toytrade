@@ -1,0 +1,19 @@
+﻿@model PresentationLayer.ViewModels.ToyViewModel
+
+<h2>Add New Toy</h2>
+
+<form asp-action="AddToy" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label asp-for="Condition">Condition</label>
+        <input asp-for="Condition" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label asp-for="Image">Image URL (optional)</label>
+        <input asp-for="Image" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Toy</button>
+</form>

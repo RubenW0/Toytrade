@@ -49,5 +49,32 @@ namespace DataAccessLayer.Repositorys
 
             return toys;
         }
+
+        //add toy
+        public void AddToy(ToyDTO toy)
+        {
+            string query = "INSERT INTO Toy (name, image, `condition`, user_id) VALUES (@name, @image, @condition, @userId)";
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (var cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@name", toy.Name);
+                        cmd.Parameters.AddWithValue("@image", string.IsNullOrEmpty(toy.Image) ? DBNull.Value : toy.Image);
+                        cmd.Parameters.AddWithValue("@condition", toy.Condition);
+                        cmd.Parameters.AddWithValue("@userId", toy.UserId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Fout bij toevoegen van speelgoed", ex);
+                }
+            }
+        }
+
+
     }
 }

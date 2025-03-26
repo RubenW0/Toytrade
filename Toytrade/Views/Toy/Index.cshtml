@@ -17,6 +17,18 @@
         .container {
             width: 80%;
             margin: 20px auto;
+            position: relative;
+        }
+
+        .create-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
 
         .toy-card {
@@ -47,6 +59,7 @@
 
     <div class="container">
         <h1>Toy List</h1>
+        <a href="/Toy/AddToy" class="create-button">Create Toy</a>
 
         @foreach (var toy in Model)
         {
