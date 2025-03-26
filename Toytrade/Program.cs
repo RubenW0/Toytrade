@@ -26,6 +26,8 @@ builder.Services.AddControllersWithViews();
 
 // Dependency Injection
 builder.Services.AddScoped<IToyRepository, ToyRepository>(); // Interface koppelen aan implementatie
+builder.Services.AddScoped<IUserRepository, UserRepository>(); // Interface koppelen aan implementatie
+
 builder.Services.AddScoped<ToyService>(); // Service registreren
 
 var app = builder.Build();

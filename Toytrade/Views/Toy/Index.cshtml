@@ -1,4 +1,4 @@
-﻿@model List<BusinessLogicLayer.DTOs.ToyDTO>
+﻿@model List<PresentationLayer.ViewModels.ToyViewModel>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +54,7 @@
                 <img src="https://via.placeholder.com/150" alt="@toy.Name" class="toy-image">
                 <h3>@toy.Name</h3>
                 <p><strong>Condition:</strong> @toy.Condition</p>
-                <p><strong>Owner:</strong> @toy.UserId</p>
+                <p><strong>Owner:</strong> @toy.Username</p>
                 <p><a href="#">View Details</a></p>
             </div>
         }

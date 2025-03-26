@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Services;
 using Microsoft.AspNetCore.Mvc;
+using PresentationLayer.ViewModels;
 
 namespace PresentationLayer.Controllers
 {
@@ -14,8 +15,18 @@ namespace PresentationLayer.Controllers
 
         public IActionResult Index()
         {
-            var toys = _toyService.GetAllToys();
-            return View(toys);
+            var toyDTOs = _toyService.GetAllToys();
+
+            var toyViewModels = toyDTOs.Select(toy => new ToyViewModel
+            {
+                Id = toy.Id,
+                Name = toy.Name,
+                Image = toy.Image,
+                Condition = toy.Condition,
+                Username = toy.Username 
+            }).ToList();
+
+            return View(toyViewModels);
         }
     }
 }
