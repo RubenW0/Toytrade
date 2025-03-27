@@ -33,5 +33,15 @@ namespace BusinessLogicLayer.Services
             _toyRepository.AddToy(toy);
         }
 
+        public void UpdateToy(ToyDTO toy)
+        {
+            _toyRepository.UpdateToy(toy);
+        }
+
+        public void DeleteToy(int toyId)
+        {
+            _toyRepository.DeleteToy(toyId);
+        }
+
     }
 }

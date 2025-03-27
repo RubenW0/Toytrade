@@ -75,6 +75,54 @@ namespace DataAccessLayer.Repositorys
             }
         }
 
+        public void UpdateToy(ToyDTO toy)
+        {
+            string query = "UPDATE Toy SET name = @name, image = @image, `condition` = @condition WHERE id = @id";
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (var cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", toy.Id);
+                        cmd.Parameters.AddWithValue("@name", toy.Name);
+                        cmd.Parameters.AddWithValue("@image", string.IsNullOrEmpty(toy.Image) ? DBNull.Value : toy.Image);
+                        cmd.Parameters.AddWithValue("@condition", toy.Condition);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Fout bij updaten van speelgoed", ex);
+                }
+            }
+        }
+
+        public void DeleteToy(int toyId)
+        {
+            string query = "DELETE FROM Toy WHERE id = @id";
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (var cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", toyId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Fout bij verwijderen van speelgoed", ex);
+                }
+            }
+        }
+
 
     }
 }

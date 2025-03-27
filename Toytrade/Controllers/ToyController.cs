@@ -39,10 +39,15 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public IActionResult AddToy(ToyViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(model);
-            //}
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error); // Debugging
+                }
+                return View(model);
+            }
 
             var toyDTO = new ToyDTO
             {
@@ -54,6 +59,55 @@ namespace PresentationLayer.Controllers
 
             _toyService.AddToy(toyDTO);
 
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var toyDTO = _toyService.GetAllToys().FirstOrDefault(t => t.Id == id);
+
+            if (toyDTO == null)
+            {
+                return NotFound();
+            }
+
+            var toyViewModel = new ToyViewModel
+            {
+                Id = toyDTO.Id,
+                Name = toyDTO.Name,
+                Image = toyDTO.Image,
+                Condition = toyDTO.Condition
+            };
+
+            return View(toyViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(ToyViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var toyDTO = new ToyDTO
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Image = model.Image,
+                Condition = model.Condition
+            };
+
+            _toyService.UpdateToy(toyDTO);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            _toyService.DeleteToy(id);
             return RedirectToAction("Index");
         }
 
