@@ -6,5 +6,6 @@ namespace BusinessLogicLayer.IRepositorys
     public interface IUserRepository
     {
         string GetUsernameById(int userId);
+        UserDTO AuthenticateUser(string username, string password);
     }
 }

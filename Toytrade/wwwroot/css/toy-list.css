@@ -1,0 +1,81 @@
+﻿.container {
+    width: 80%;
+    margin: 20px auto;
+    position: relative;
+}
+
+.create-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.toy-card {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toy-info {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.toy-card h3 {
+    margin-top: 0;
+}
+
+.toy-card p {
+    margin: 5px 0;
+}
+
+.toy-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.create-button, .edit-button, .delete-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+}
+
+.create-button {
+    background-color: #000000;
+}
+
+.edit-button {
+    background-color: #000000;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+    .create-button:hover,
+    .edit-button:hover,
+    .delete-button:hover {
+        color: white;
+        opacity: 0.6;
+    }

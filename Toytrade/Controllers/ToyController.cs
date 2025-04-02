@@ -44,23 +44,35 @@ namespace PresentationLayer.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 foreach (var error in errors)
                 {
-                    Console.WriteLine(error); // Debugging
+                    Console.WriteLine(error);
                 }
                 return View(model);
             }
+
+            // Get UserId from Session
+            var userIdString = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                ViewBag.Error = "Je moet ingelogd zijn om een speelgoed toe te voegen.";
+                return View(model);
+            }
+
+            int userId = int.Parse(userIdString);
 
             var toyDTO = new ToyDTO
             {
                 Name = model.Name,
                 Image = model.Image,
                 Condition = model.Condition,
-                UserId = 1 // TEMPORARY, replace with user session id
+                UserId = userId 
             };
 
             _toyService.AddToy(toyDTO);
 
             return RedirectToAction("Index");
         }
+
 
         [HttpGet]
         public IActionResult Edit(int id)

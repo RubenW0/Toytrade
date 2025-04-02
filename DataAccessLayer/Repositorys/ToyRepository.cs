@@ -50,7 +50,6 @@ namespace DataAccessLayer.Repositorys
             return toys;
         }
 
-        //add toy
         public void AddToy(ToyDTO toy)
         {
             string query = "INSERT INTO Toy (name, image, `condition`, user_id) VALUES (@name, @image, @condition, @userId)";

@@ -1,0 +1,16 @@
+﻿@model PresentationLayer.Models.LoginViewModel
+
+<form method="post" action="/User/Login">
+    <label>Gebruikersnaam:</label>
+    <input type="text" asp-for="Username" required />
+
+    <label>Wachtwoord:</label>
+    <input type="password" asp-for="Password" required />
+
+    <button type="submit">Inloggen</button>
+</form>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red;">@ViewBag.Error</p>
+}

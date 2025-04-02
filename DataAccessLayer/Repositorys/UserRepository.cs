@@ -30,5 +30,34 @@ namespace DataAccessLayer.Repositorys
             }
         }
 
+        public UserDTO AuthenticateUser(string username, string password)
+        {
+            string query = "SELECT id, username FROM User WHERE username = @username AND password = @password";
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new UserDTO
+                            {
+                                Id = reader.GetInt32("id"),
+                                Username = reader.GetString("username")
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null; 
+        }
+
     }
 }

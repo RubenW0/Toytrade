@@ -1,7 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
-using DataAccessLayer.Repositorys; // Voor ToyRepository
-using BusinessLogicLayer.Services; // Voor ToyService
-using BusinessLogicLayer.IRepositorys; // Voor IToyRepository
+using DataAccessLayer.Repositorys;
+using BusinessLogicLayer.Services;
+using BusinessLogicLayer.IRepositorys; 
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
@@ -29,6 +29,11 @@ builder.Services.AddScoped<IToyRepository, ToyRepository>(); // Interface koppel
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // Interface koppelen aan implementatie
 
 builder.Services.AddScoped<ToyService>(); // Service registreren
+builder.Services.AddScoped<UserService>(); // Service registreren
+
+
+// Add session
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -39,10 +44,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
