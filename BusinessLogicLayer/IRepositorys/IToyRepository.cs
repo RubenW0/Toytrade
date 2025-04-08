@@ -6,6 +6,7 @@ namespace BusinessLogicLayer.IRepositorys
     public interface IToyRepository
     {
         List<ToyDTO> GetAllToys();
+        List<ToyDTO> GetToysByUserId(int userId);
         void AddToy(ToyDTO toy);
         void UpdateToy(ToyDTO toy);
         void DeleteToy(int toyId);

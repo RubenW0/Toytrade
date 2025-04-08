@@ -28,6 +28,18 @@ namespace BusinessLogicLayer.Services
             return toys;
         }
 
+        public List<ToyDTO> GetToysByUserId(int userId)
+        {
+            var toys = _toyRepository.GetToysByUserId(userId);
+
+            foreach (var toy in toys)
+            {
+                toy.Username = _userRepository.GetUsernameById(toy.UserId);
+            }
+
+            return toys;
+        }
+
         public void AddToy(ToyDTO toy)
         {
             _toyRepository.AddToy(toy);

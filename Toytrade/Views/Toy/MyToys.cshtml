@@ -1,0 +1,26 @@
+﻿@model List<PresentationLayer.ViewModels.ToyViewModel>
+
+<h2>My Toys</h2>
+<a href="/Toy/AddToy" class="create-button">Add Toy</a>
+@section Styles {
+    <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true">
+}
+
+@foreach (var toy in Model)
+{
+    <div class="toy-card">
+        <img src="https://via.placeholder.com/150" alt="@toy.Name" class="toy-image">
+        <div class="toy-info">
+            <h3>@toy.Name</h3>
+            <p><strong>Condition:</strong> @toy.Condition</p>
+        </div>
+        <div class="action-buttons">
+            <a href="/Toy/Edit/@toy.Id" class="edit-button">Edit</a>
+
+            <form method="post" action="/Toy/Delete" onsubmit="return confirm('Are you sure?');">
+                <input type="hidden" name="id" value="@toy.Id" />
+                <button type="submit" class="delete-button">Delete</button>
+            </form>
+        </div>
+    </div>
+}

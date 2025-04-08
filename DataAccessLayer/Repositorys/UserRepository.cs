@@ -69,7 +69,7 @@ namespace DataAccessLayer.Repositorys
             var query = "INSERT INTO user (username, password, address) VALUES (@username, @password, @address)";
             using var cmd = new MySqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@username", user.Username);
-            cmd.Parameters.AddWithValue("@password", user.Password); // This should now be the hashed password
+            cmd.Parameters.AddWithValue("@password", user.Password);
             cmd.Parameters.AddWithValue("@address", user.Address);
 
             cmd.ExecuteNonQuery();

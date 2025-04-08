@@ -125,5 +125,30 @@ namespace PresentationLayer.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult MyToys()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToAction("Login", "User"); 
+            }
+
+            int userId = int.Parse(userIdString);
+
+            var toyDTOs = _toyService.GetToysByUserId(userId);
+
+            var toyViewModels = toyDTOs.Select(toy => new ToyViewModel
+            {
+                Id = toy.Id,
+                Name = toy.Name,
+                Image = toy.Image,
+                Condition = toy.Condition,
+                Username = toy.Username
+            }).ToList();
+
+            return View(toyViewModels);
+        }
+
     }
 }

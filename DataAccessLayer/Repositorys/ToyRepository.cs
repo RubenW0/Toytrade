@@ -50,6 +50,45 @@ namespace DataAccessLayer.Repositorys
             return toys;
         }
 
+        public List<ToyDTO> GetToysByUserId(int userId)
+        {
+            var toys = new List<ToyDTO>();
+            string query = "SELECT id, name, image, `condition`, user_id FROM Toy WHERE user_id = @userId";
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (var cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userId", userId);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                toys.Add(new ToyDTO
+                                {
+                                    Id = reader.GetInt32("id"),
+                                    Name = reader.GetString("name"),
+                                    Image = reader.IsDBNull(reader.GetOrdinal("image")) ? null : reader.GetString("image"),
+                                    Condition = reader.GetString("condition"),
+                                    UserId = reader.GetInt32("user_id")
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Fout bij ophalen van speelgoed per gebruiker", ex);
+                }
+            }
+
+            return toys;
+        }
+
+
         public void AddToy(ToyDTO toy)
         {
             string query = "INSERT INTO Toy (name, image, `condition`, user_id) VALUES (@name, @image, @condition, @userId)";
