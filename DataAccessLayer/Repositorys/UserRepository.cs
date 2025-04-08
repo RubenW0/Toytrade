@@ -30,9 +30,9 @@ namespace DataAccessLayer.Repositorys
             }
         }
 
-        public UserDTO AuthenticateUser(string username, string password)
+        public UserDTO AuthenticateUser(string username)
         {
-            string query = "SELECT id, username FROM User WHERE username = @username AND password = @password";
+            string query = "SELECT id, username, password, address FROM User WHERE username = @username";
 
             using (var connection = new MySqlConnection(_connectionString))
             {
@@ -40,7 +40,6 @@ namespace DataAccessLayer.Repositorys
                 using (var cmd = new MySqlCommand(query, connection))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@password", password);
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -49,15 +48,33 @@ namespace DataAccessLayer.Repositorys
                             return new UserDTO
                             {
                                 Id = reader.GetInt32("id"),
-                                Username = reader.GetString("username")
+                                Username = reader.GetString("username"),
+                                Password = reader.GetString("password"), 
+                                Address = reader.GetString("address")
                             };
                         }
                     }
                 }
             }
 
-            return null; 
+            return null;
         }
+
+
+        public void AddUser(UserDTO user)
+        {
+            using var connection = new MySqlConnection(_connectionString);
+            connection.Open();
+
+            var query = "INSERT INTO user (username, password, address) VALUES (@username, @password, @address)";
+            using var cmd = new MySqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@username", user.Username);
+            cmd.Parameters.AddWithValue("@password", user.Password); // This should now be the hashed password
+            cmd.Parameters.AddWithValue("@address", user.Address);
+
+            cmd.ExecuteNonQuery();
+        }
+
 
     }
 }

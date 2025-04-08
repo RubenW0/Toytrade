@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.IRepositorys;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +12,30 @@ namespace BusinessLogicLayer.Services
     public class UserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher<UserDTO> _passwordHasher;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IPasswordHasher<UserDTO> passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
-
         public UserDTO Login(string username, string password)
         {
-            return _userRepository.AuthenticateUser(username, password);
+            var user = _userRepository.AuthenticateUser(username); 
+
+            if (user == null)
+                return null;
+
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+
+            return result == PasswordVerificationResult.Success ? user : null;
         }
 
+
+        public void Register(UserDTO user)
+        {
+            user.Password = _passwordHasher.HashPassword(user, user.Password);
+            _userRepository.AddUser(user);
+        }
     }
 }

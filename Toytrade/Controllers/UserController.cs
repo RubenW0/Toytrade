@@ -54,6 +54,30 @@ namespace PresentationLayer.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var userDTO = new UserDTO
+            {
+                Username = model.Username,
+                Password = model.Password,
+                Address = model.Address
+            };
+
+            _userService.Register(userDTO);
+
+            return RedirectToAction("Login");
+        }
+
     }
 }
 

@@ -1,7 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
+using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Repositorys;
 using BusinessLogicLayer.Services;
-using BusinessLogicLayer.IRepositorys; 
+using BusinessLogicLayer.IRepositorys;
+using BusinessLogicLayer.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
@@ -31,6 +33,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>(); // Interface kopp
 builder.Services.AddScoped<ToyService>(); // Service registreren
 builder.Services.AddScoped<UserService>(); // Service registreren
 
+// Register IPasswordHasher<UserDTO>
+builder.Services.AddScoped<IPasswordHasher<UserDTO>, PasswordHasher<UserDTO>>();
 
 // Add session
 builder.Services.AddSession();

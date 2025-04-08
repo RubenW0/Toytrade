@@ -27,7 +27,9 @@ namespace PresentationLayer.Controllers
                 Username = toy.Username 
             }).ToList();
 
-            return View(toyViewModels);
+            var sortedToys = toyViewModels.OrderByDescending(t => t.Id).ToList();
+
+            return View(sortedToys);
         }
 
         [HttpGet]
