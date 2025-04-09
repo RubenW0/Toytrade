@@ -1,57 +1,38 @@
-﻿.container {
-    width: 80%;
-    margin: 20px auto;
-    position: relative;
-}
-
-.create-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 10px 20px;
-    background-color: #000000;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
+﻿/* Styling specifiek voor de toy-list pagina */
 .toy-card {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.toy-info {
-    flex-grow: 1;
-    margin-left: 20px;
-}
-
-.toy-card h3 {
-    margin-top: 0;
-}
-
-.toy-card p {
-    margin: 5px 0;
+    background-color: #fffaed;
+    border: 2px solid #6b4c3b;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 4px 4px #d99873;
 }
 
 .toy-image {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
+    width: 120px;
+    height: 120px;
+    background: #ccc;
+    margin-right: 20px;
+    border-radius: 8px;
 }
 
-.action-buttons {
-    display: flex;
-    gap: 10px;
+.toy-info {
+    flex: 1;
 }
 
-.create-button, .edit-button, .delete-button {
+    .toy-info h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .toy-info p {
+        margin: 5px 0;
+    }
+
+/* Knoppen voor acties zoals maken, bewerken, verwijderen */
+/*.create-button, .edit-button, .delete-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -78,4 +59,4 @@
     .delete-button:hover {
         color: white;
         opacity: 0.6;
-    }
+    }*/

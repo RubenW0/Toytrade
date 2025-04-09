@@ -7,7 +7,7 @@
     <label>Wachtwoord:</label>
     <input type="password" asp-for="Password" required />
 
-    <button type="submit">Inloggen</button>
+    <button class="btn btn-standard" type="submit">Inloggen</button>
 </form>
 
 @if (ViewBag.Error != null)
@@ -15,6 +15,5 @@
     <p style="color:red;">@ViewBag.Error</p>
 }
 
-<!-- Registratieknop -->
 <p>Nog geen account?</p>
-<a href="/User/Register" class="btn btn-secondary">Registreren</a>
+<a href="/User/Register" class="btn btn-standard">Registreren</a>

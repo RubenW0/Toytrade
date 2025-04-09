@@ -51,7 +51,6 @@ namespace PresentationLayer.Controllers
                 return View(model);
             }
 
-            // Get UserId from Session
             var userIdString = HttpContext.Session.GetString("UserId");
 
             if (string.IsNullOrEmpty(userIdString))

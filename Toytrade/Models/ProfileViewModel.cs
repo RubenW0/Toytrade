@@ -1,4 +1,6 @@
-﻿namespace PresentationLayer.Models
+﻿using PresentationLayer.ViewModels;
+
+namespace PresentationLayer.Models
 {
     public class ProfileViewModel
     {

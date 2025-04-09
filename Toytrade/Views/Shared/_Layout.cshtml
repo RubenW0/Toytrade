@@ -41,13 +41,13 @@
                         {
                             <li class="nav-item d-flex align-items-center">
                                 <span class="nav-link text-dark">👤 @Context.Session.GetString("Username")</span>
-                                <a class="btn btn-outline-danger ms-2" asp-controller="User" asp-action="Logout">Logout</a>
+                                <a class="nav-link text-dark ms-2" asp-controller="User" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-primary" asp-controller="User" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>

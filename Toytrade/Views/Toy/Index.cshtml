@@ -14,7 +14,6 @@
 
     <div class="container">
         <h1>Toy List</h1>
-        <a href="/Toy/AddToy" class="create-button">Create Toy</a>
 
         @foreach (var toy in Model)
         {
@@ -24,14 +23,6 @@
                     <h3>@toy.Name</h3>
                     <p><strong>Condition:</strong> @toy.Condition</p>
                     <p><strong>Owner:</strong> @toy.Username</p>
-                </div>
-                <div class="action-buttons">
-                    <a href="/Toy/Edit/@toy.Id" class="edit-button">Edit</a>
-
-                    <form method="post" action="/Toy/Delete" onsubmit="return confirm('Are you sure you want to delete this toy?');">
-                        <input type="hidden" name="id" value="@toy.Id" />
-                        <button type="submit" class="delete-button">Delete</button>
-                    </form>
                 </div>
             </div>
         }

@@ -1,27 +1,106 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-    font-family: Arial, sans-serif;
+/* Algemene basisstijlen voor de gehele site */
+html, body {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    margin-bottom: 60px;
+    width: 100%;
+    background-color: #fdf6e3;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #6b4c3b;
 }
 
+h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 32px;
+    color: #d99873;
+}
+
+/* Standard Button Styling */
+.btn-standard {
+    padding: 6px 14px; /* Reduced padding */
+    background-color: #d99873; /* Same color as the navbar */
+    color: #fff;
+    border: 2px solid #6b4c3b;
+    border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: bold;
+    font-size: 14px; /* Smaller font size */
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin: 4px;
+}
+
+    .btn-standard:hover {
+        background-color: #6b4c3b; /* Darker shade on hover */
+        box-shadow: 6px 6px 8px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow on hover */
+    }
+
+    .btn-standard:active {
+        background-color: #d99873; /* Return to original color on click */
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Lighter shadow on click */
+    }
+
+
+
+/* Algemene container styling */
+.container {
+    margin-top: 30px;
+}
+
+/* Button Focus Styling */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Navbar Stijlen */
+nav.navbar {
+    background-color: #d99873 !important;
+    border-bottom: 4px solid #6b4c3b;
+    margin: 0;
+    padding: 0;
+}
+
+    nav.navbar .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    nav.navbar .navbar-brand {
+        font-family: 'Pacifico', cursive;
+        font-size: 32px;
+        color: #fffaed;
+        padding-left: 15px;
+    }
+
+    nav.navbar .navbar-nav .nav-link {
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: bold;
+        color: #fff;
+        margin-right: 20px;
+    }
+
+        nav.navbar .navbar-nav .nav-link:hover {
+            color: #d99873;
+            text-decoration: underline;
+        }
+
+    nav.navbar .navbar-toggler {
+        border-color: #6b4c3b;
+    }
+
+    nav.navbar .navbar-toggler-icon {
+        background-color: #6b4c3b;
+    }
+
+    nav.navbar .btn-outline-primary,
+    nav.navbar .btn-outline-danger {
+        border-color: #d99873;
+        color: #d99873;
+    }
+
+        nav.navbar .btn-outline-primary:hover,
+        nav.navbar .btn-outline-danger:hover {
+            background-color: #d99873;
+            color: white;
+        }
