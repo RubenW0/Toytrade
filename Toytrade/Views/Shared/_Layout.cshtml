@@ -23,16 +23,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Toy" asp-action="Index">Toys</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Toy" asp-action="Index">Toys</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Toy" asp-action="MyToys">My toys</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Profile">Profile</a>
+                            <a class="nav-link" asp-area="" asp-controller="Toy" asp-action="MyToys">My toys</a>
                         </li>
                     </ul>
 
@@ -40,14 +34,14 @@
                         @if (Context.Session.GetString("UserId") != null)
                         {
                             <li class="nav-item d-flex align-items-center">
-                                <span class="nav-link text-dark">👤 @Context.Session.GetString("Username")</span>
-                                <a class="nav-link text-dark ms-2" asp-controller="User" asp-action="Logout">Logout</a>
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Profile"> 👤 @Context.Session.GetString("Username")</a>
+                                <a class="nav-link ms-2" asp-controller="User" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Login</a>
+                                <a class="nav-link" asp-controller="User" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>

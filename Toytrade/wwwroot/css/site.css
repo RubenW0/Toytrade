@@ -33,6 +33,7 @@ h1 {
 
     .btn-standard:hover {
         background-color: #6b4c3b; /* Darker shade on hover */
+        color: #fff !important;
         box-shadow: 6px 6px 8px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow on hover */
     }
 
@@ -41,6 +42,12 @@ h1 {
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Lighter shadow on click */
     }
 
+.action-buttons {
+    display: flex;
+    justify-content: flex-end; /* of space-between, als je ze uit elkaar wilt */
+    gap: 10px; /* ruimte tussen de knoppen */
+    margin-top: auto;
+}
 
 
 /* Algemene container styling */
@@ -73,16 +80,20 @@ nav.navbar {
         padding-left: 15px;
     }
 
+        nav.navbar .navbar-brand:hover {
+            color: #5C4033; /* Or any color you want it to be on hover */
+            text-decoration: none; /* Optional: removes underline if it appears */
+        }
+
     nav.navbar .navbar-nav .nav-link {
         font-family: 'IBM Plex Mono', monospace;
         font-weight: bold;
-        color: #fff;
+        color: #fffaed;
         margin-right: 20px;
     }
 
         nav.navbar .navbar-nav .nav-link:hover {
-            color: #d99873;
-            text-decoration: underline;
+            color: #5C4033;
         }
 
     nav.navbar .navbar-toggler {

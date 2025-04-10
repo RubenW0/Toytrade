@@ -51,6 +51,13 @@ namespace PresentationLayer.Controllers
             {
                 Username = HttpContext.Session.GetString("Username")
             };
+
+            if (string.IsNullOrEmpty(model.Username))
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+
             return View(model);
         }
 

@@ -126,7 +126,7 @@ namespace PresentationLayer.Controllers
 
         public IActionResult MyToys()
         {
-            var userIdString = HttpContext.Session.GetString("UserId");
+            string? userIdString = HttpContext.Session.GetString("UserId");
 
             if (string.IsNullOrEmpty(userIdString))
             {
