@@ -19,11 +19,10 @@
         @foreach (var toy in Model)
         {
             <div class="toy-card">
-                <img src="https://via.placeholder.com/150" alt="@toy.Name" class="toy-image">
+                <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />
                 <div class="toy-info">
                     <h3>@toy.Name</h3>
                     <p><strong>Condition:</strong> @toy.Condition</p>
-                    <p><strong>Owner:</strong> @toy.Username</p>
                 </div>
                 <div class="action-buttons">
                     <a href="/Toy/Edit/@toy.Id" class="btn-standard">Edit</a>

@@ -22,7 +22,7 @@ namespace PresentationLayer.Controllers
             {
                 Id = toy.Id,
                 Name = toy.Name,
-                Image = toy.Image,
+                Image = toy.ImagePath,
                 Condition = toy.Condition,
                 Username = toy.Username 
             }).ToList();
@@ -64,14 +64,15 @@ namespace PresentationLayer.Controllers
             var toyDTO = new ToyDTO
             {
                 Name = model.Name,
-                Image = model.Image,
                 Condition = model.Condition,
-                UserId = userId 
+                UserId = userId,
+                ImageFile = model.ImageFile 
             };
+
 
             _toyService.AddToy(toyDTO);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("MyToys");
         }
 
 
@@ -89,12 +90,13 @@ namespace PresentationLayer.Controllers
             {
                 Id = toyDTO.Id,
                 Name = toyDTO.Name,
-                Image = toyDTO.Image,
-                Condition = toyDTO.Condition
+                Condition = toyDTO.Condition,
+                Image = toyDTO.ImagePath
             };
 
             return View(toyViewModel);
         }
+
 
         [HttpPost]
         public IActionResult Edit(ToyViewModel model)
@@ -108,14 +110,17 @@ namespace PresentationLayer.Controllers
             {
                 Id = model.Id,
                 Name = model.Name,
-                Image = model.Image,
-                Condition = model.Condition
+                Condition = model.Condition,
+                ImageFile = model.ImageFile 
             };
 
             _toyService.UpdateToy(toyDTO);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("MyToys");
         }
+
+
+
 
         [HttpPost]
         public IActionResult Delete(int id)
@@ -141,12 +146,14 @@ namespace PresentationLayer.Controllers
             {
                 Id = toy.Id,
                 Name = toy.Name,
-                Image = toy.Image,
+                Image = toy.ImagePath,
                 Condition = toy.Condition,
                 Username = toy.Username
             }).ToList();
 
-            return View(toyViewModels);
+            var sortedToys = toyViewModels.OrderByDescending(t => t.Id).ToList();
+
+            return View(sortedToys);
         }
 
     }

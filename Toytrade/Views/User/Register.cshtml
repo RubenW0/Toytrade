@@ -1,21 +1,31 @@
 ﻿@model PresentationLayer.Models.RegisterViewModel
 
-<h2>Registreren</h2>
+<div class="container" style="max-width: 500px; margin: auto;">
+    <h2 style="text-align: center; color: #d99873;">Register</h2>
 
-<form asp-action="Register" method="post">
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+    <form asp-action="Register" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+        <div>
+            <label asp-for="Username" class="form-label"></label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Password" class="form-label"></label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Address" class="form-label"></label>
+            <input asp-for="Address" class="form-control" />
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-standard">Register</button>
+        </div>
+    </form>
+
+    <div style="text-align: center; margin-top: 15px;">
+        <p>Already have an account?</p>
+        <a href="/User/Login" class="btn btn-standard">Log in</a>
     </div>
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div>
-        <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Registreer</button>
-</form>
+</div>

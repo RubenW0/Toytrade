@@ -12,9 +12,10 @@ namespace PresentationLayer.ViewModels
         [Required(ErrorMessage = "Condition is required")]
         public string Condition { get; set; }
 
-        [Display(Name = "Image URL")]
-        public string? Image { get; set; } // Image is now optional
+        public string? Image { get; set; }
 
-        public string? Username { get; set; } // No validation required (set in service)
+        public string? Username { get; set; }
+
+        public IFormFile? ImageFile { get; set; } 
     }
 }

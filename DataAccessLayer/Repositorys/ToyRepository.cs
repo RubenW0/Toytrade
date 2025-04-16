@@ -18,7 +18,7 @@ namespace DataAccessLayer.Repositorys
         public List<ToyDTO> GetAllToys()
         {
             var toys = new List<ToyDTO>();
-            string query = "SELECT id, name, image, `condition`, user_id FROM Toy";
+            string query = "SELECT id, name, image_path AS image, `condition`, user_id FROM Toy";
 
             using (var connection = new MySqlConnection(_connectionString))
             {
@@ -34,7 +34,7 @@ namespace DataAccessLayer.Repositorys
                             {
                                 Id = reader.GetInt32("id"),
                                 Name = reader.GetString("name"),
-                                Image = reader.IsDBNull(reader.GetOrdinal("image")) ? null : reader.GetString("image"),
+                                ImagePath = reader.IsDBNull(reader.GetOrdinal("image")) ? null : reader.GetString("image"),
                                 Condition = reader.GetString("condition"),
                                 UserId = reader.GetInt32("user_id")
                             });
@@ -53,7 +53,7 @@ namespace DataAccessLayer.Repositorys
         public List<ToyDTO> GetToysByUserId(int userId)
         {
             var toys = new List<ToyDTO>();
-            string query = "SELECT id, name, image, `condition`, user_id FROM Toy WHERE user_id = @userId";
+            string query = "SELECT id, name, image_path AS image, `condition`, user_id FROM Toy WHERE user_id = @userId";
 
             using (var connection = new MySqlConnection(_connectionString))
             {
@@ -71,7 +71,7 @@ namespace DataAccessLayer.Repositorys
                                 {
                                     Id = reader.GetInt32("id"),
                                     Name = reader.GetString("name"),
-                                    Image = reader.IsDBNull(reader.GetOrdinal("image")) ? null : reader.GetString("image"),
+                                    ImagePath = reader.IsDBNull(reader.GetOrdinal("image")) ? null : reader.GetString("image"),
                                     Condition = reader.GetString("condition"),
                                     UserId = reader.GetInt32("user_id")
                                 });
@@ -91,7 +91,7 @@ namespace DataAccessLayer.Repositorys
 
         public void AddToy(ToyDTO toy)
         {
-            string query = "INSERT INTO Toy (name, image, `condition`, user_id) VALUES (@name, @image, @condition, @userId)";
+            string query = "INSERT INTO Toy (name, image_path, `condition`, user_id) VALUES (@name, @image, @condition, @userId)";
             using (var connection = new MySqlConnection(_connectionString))
             {
                 try
@@ -100,7 +100,7 @@ namespace DataAccessLayer.Repositorys
                     using (var cmd = new MySqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@name", toy.Name);
-                        cmd.Parameters.AddWithValue("@image", string.IsNullOrEmpty(toy.Image) ? DBNull.Value : toy.Image);
+                        cmd.Parameters.AddWithValue("@image", string.IsNullOrEmpty(toy.ImagePath) ? DBNull.Value : toy.ImagePath);
                         cmd.Parameters.AddWithValue("@condition", toy.Condition);
                         cmd.Parameters.AddWithValue("@userId", toy.UserId);
                         cmd.ExecuteNonQuery();
@@ -115,29 +115,36 @@ namespace DataAccessLayer.Repositorys
 
         public void UpdateToy(ToyDTO toy)
         {
-            string query = "UPDATE Toy SET name = @name, image = @image, `condition` = @condition WHERE id = @id";
+            string query;
+
+            if (!string.IsNullOrEmpty(toy.ImagePath))
+            {
+                query = "UPDATE Toy SET name = @name, image_path = @image, `condition` = @condition WHERE id = @id";
+            }
+            else
+            {
+                query = "UPDATE Toy SET name = @name, `condition` = @condition WHERE id = @id";
+            }
 
             using (var connection = new MySqlConnection(_connectionString))
             {
-                try
+                connection.Open();
+                using (var cmd = new MySqlCommand(query, connection))
                 {
-                    connection.Open();
-                    using (var cmd = new MySqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@id", toy.Id);
-                        cmd.Parameters.AddWithValue("@name", toy.Name);
-                        cmd.Parameters.AddWithValue("@image", string.IsNullOrEmpty(toy.Image) ? DBNull.Value : toy.Image);
-                        cmd.Parameters.AddWithValue("@condition", toy.Condition);
+                    cmd.Parameters.AddWithValue("@id", toy.Id);
+                    cmd.Parameters.AddWithValue("@name", toy.Name);
+                    cmd.Parameters.AddWithValue("@condition", toy.Condition);
 
-                        cmd.ExecuteNonQuery();
+                    if (!string.IsNullOrEmpty(toy.ImagePath))
+                    {
+                        cmd.Parameters.AddWithValue("@image", toy.ImagePath);
                     }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Fout bij updaten van speelgoed", ex);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
+
 
         public void DeleteToy(int toyId)
         {

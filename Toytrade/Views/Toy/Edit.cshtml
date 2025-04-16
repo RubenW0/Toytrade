@@ -1,24 +1,43 @@
 ﻿@model PresentationLayer.ViewModels.ToyViewModel
 
-<h2>Edit Toy</h2>
+<h2>Speelgoed Bewerken</h2>
 
-<form method="post">
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
 
     <div>
-        <label>Name</label>
-        <input type="text" asp-for="Name" required />
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div>
-        <label>Image</label>
-        <input type="text" asp-for="Image" />
+        <label asp-for="Condition"></label>
+        <input asp-for="Condition" class="form-control" />
+        <span asp-validation-for="Condition" class="text-danger"></span>
     </div>
 
     <div>
-        <label>Condition</label>
-        <input type="text" asp-for="Condition" required />
+        <p>Huidige afbeelding:</p>
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img src="@Model.Image" alt="Toy Image" width="150" />
+        }
+        else
+        {
+            <p><em>Geen afbeelding beschikbaar</em></p>
+        }
     </div>
 
-    <button type="submit">Save Changes</button>
+    <div>
+        <label for="ImageFile">Nieuwe afbeelding uploaden (optioneel)</label>
+        <input asp-for="ImageFile" type="file" class="form-control" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-standard mt-2">Opslaan</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
