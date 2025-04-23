@@ -1,4 +1,5 @@
 ﻿@model PresentationLayer.ViewModels.ToyViewModel
+@using PresentationLayer.Models.Enums
 
 <h2>Speelgoed Bewerken</h2>
 
@@ -13,7 +14,7 @@
 
     <div>
         <label asp-for="Condition"></label>
-        <input asp-for="Condition" class="form-control" />
+        <select asp-for="Condition" asp-items="Html.GetEnumSelectList<ToyCondition>()" class="form-control"></select>
         <span asp-validation-for="Condition" class="text-danger"></span>
     </div>
 

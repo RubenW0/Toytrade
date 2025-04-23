@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.Services;
 using Microsoft.AspNetCore.Mvc;
+using PresentationLayer.Models.Enums;
 using PresentationLayer.ViewModels;
 
 namespace PresentationLayer.Controllers
@@ -23,7 +24,7 @@ namespace PresentationLayer.Controllers
                 Id = toy.Id,
                 Name = toy.Name,
                 Image = toy.ImagePath,
-                Condition = toy.Condition,
+                Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
                 Username = toy.Username 
             }).ToList();
 
@@ -64,11 +65,10 @@ namespace PresentationLayer.Controllers
             var toyDTO = new ToyDTO
             {
                 Name = model.Name,
-                Condition = model.Condition,
+                Condition = model.Condition.ToString(), 
                 UserId = userId,
-                ImageFile = model.ImageFile 
+                ImageFile = model.ImageFile
             };
-
 
             _toyService.AddToy(toyDTO);
 
@@ -90,7 +90,7 @@ namespace PresentationLayer.Controllers
             {
                 Id = toyDTO.Id,
                 Name = toyDTO.Name,
-                Condition = toyDTO.Condition,
+                Condition = Enum.Parse<ToyCondition>(toyDTO.Condition),
                 Image = toyDTO.ImagePath
             };
 
@@ -110,8 +110,8 @@ namespace PresentationLayer.Controllers
             {
                 Id = model.Id,
                 Name = model.Name,
-                Condition = model.Condition,
-                ImageFile = model.ImageFile 
+                Condition = model.Condition.ToString(), 
+                ImageFile = model.ImageFile
             };
 
             _toyService.UpdateToy(toyDTO);
@@ -142,12 +142,13 @@ namespace PresentationLayer.Controllers
 
             var toyDTOs = _toyService.GetToysByUserId(userId);
 
+
             var toyViewModels = toyDTOs.Select(toy => new ToyViewModel
             {
                 Id = toy.Id,
                 Name = toy.Name,
                 Image = toy.ImagePath,
-                Condition = toy.Condition,
+                Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
                 Username = toy.Username
             }).ToList();
 

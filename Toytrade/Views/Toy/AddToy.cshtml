@@ -1,4 +1,6 @@
 ﻿@model PresentationLayer.ViewModels.ToyViewModel
+@using PresentationLayer.Models.Enums
+
 
 <h2>Add New Toy</h2>
 
@@ -9,7 +11,8 @@
     </div>
     <div class="form-group">
         <label asp-for="Condition">Condition</label>
-        <input asp-for="Condition" class="form-control" required />
+        <select asp-for="Condition" asp-items="Html.GetEnumSelectList<ToyCondition>()" class="form-control"></select>
+
     </div>
 
     <div class="form-group">

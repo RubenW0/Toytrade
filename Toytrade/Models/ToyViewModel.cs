@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PresentationLayer.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace PresentationLayer.ViewModels
 {
@@ -10,7 +11,7 @@ namespace PresentationLayer.ViewModels
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Condition is required")]
-        public string Condition { get; set; }
+        public ToyCondition Condition { get; set; }
 
         public string? Image { get; set; }
 
