@@ -17,7 +17,12 @@ namespace PresentationLayer.Controllers
 
         public IActionResult Index()
         {
-            var toyDTOs = _toyService.GetAllToys();
+            var userIdString = HttpContext.Session.GetString("UserId");
+            int? userId = string.IsNullOrEmpty(userIdString) ? null : int.Parse(userIdString);
+
+            var toyDTOs = _toyService.GetAllToys()
+                .Where(toy => toy.UserId != userId)
+                .ToList();
 
             var toyViewModels = toyDTOs.Select(toy => new ToyViewModel
             {
@@ -25,7 +30,7 @@ namespace PresentationLayer.Controllers
                 Name = toy.Name,
                 Image = toy.ImagePath,
                 Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                Username = toy.Username 
+                Username = toy.Username
             }).ToList();
 
             var sortedToys = toyViewModels.OrderByDescending(t => t.Id).ToList();

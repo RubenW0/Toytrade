@@ -1,5 +1,5 @@
 ﻿using BusinessLogicLayer.DTOs;
-using BusinessLogicLayer.IRepositorys;
+using BusinessLogicLayer.IRepositories;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;

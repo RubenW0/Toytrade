@@ -1,5 +1,5 @@
 ﻿using BusinessLogicLayer.DTOs;
-using BusinessLogicLayer.IRepositorys;
+using BusinessLogicLayer.IRepositories;
 using Microsoft.Extensions.Hosting; 
 using System.Collections.Generic;
 using System.Linq;

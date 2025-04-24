@@ -1,7 +1,7 @@
 ﻿using BusinessLogicLayer.DTOs;
 using System.Collections.Generic;
 
-namespace BusinessLogicLayer.IRepositorys
+namespace BusinessLogicLayer.IRepositories
 {
     public interface IUserRepository
     {

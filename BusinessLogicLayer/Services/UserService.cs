@@ -1,5 +1,5 @@
 ﻿using BusinessLogicLayer.DTOs;
-using BusinessLogicLayer.IRepositorys;
+using BusinessLogicLayer.IRepositories;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
