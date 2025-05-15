@@ -25,7 +25,10 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
             var user = _userService.Login(model.Username, model.Password);
             if (user != null)

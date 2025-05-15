@@ -10,10 +10,10 @@ namespace BusinessLogicLayer.Services
     {
         private readonly IToyRepository _toyRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IHostEnvironment _env;
+        private readonly IHostEnvironment? _env;
 
 
-        public ToyService(IToyRepository toyRepository, IUserRepository userRepository, IHostEnvironment env)
+        public ToyService(IToyRepository toyRepository, IUserRepository userRepository, IHostEnvironment? env)
         {
             _toyRepository = toyRepository;
             _userRepository = userRepository;
