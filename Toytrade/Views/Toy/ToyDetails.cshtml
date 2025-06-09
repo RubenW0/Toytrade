@@ -1,0 +1,29 @@
+﻿@model PresentationLayer.ViewModels.ToyViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="detail-page">
+    <div class="left-section">
+        <h2>@Model.Name</h2>
+        <p><strong>Conditie:</strong> @Model.Condition</p>
+        <img src="@Model.Image" alt="@Model.Name" class="toy-detail-image" />
+        <p><strong>Beschrijving:</strong> (beschrijving hier toevoegen indien beschikbaar)</p>
+    </div>
+
+    <div class="right-section">
+        <div class="user-info">
+            <h3>@Model.Username</h3>
+            <button class="btn-standard">Bekijk profiel</button>
+            <p>14 keer geruild</p>
+            <p>4.2/5 sterren</p>
+            <button class="btn-standard">Ruilverzoek indienen</button>
+        </div>
+
+        <div class="other-swaps">
+            <h4>Andere ruilverzoeken</h4>
+
+        </div>
+    </div>
+</div>

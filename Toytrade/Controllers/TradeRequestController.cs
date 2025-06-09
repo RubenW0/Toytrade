@@ -16,6 +16,20 @@ namespace PresentationLayer.Controllers
             _tradeRequestService = tradeRequestService;
         }
 
+        public IActionResult MyRequests()
+        {
+            string? userIdString = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            int userId = int.Parse(userIdString);
+
+            var requests = _tradeRequestService.GetTradeRequestsByUserId(userId);
+            return View(requests);
+        }
 
 
 

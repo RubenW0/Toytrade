@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.IRepositories;
+﻿using BusinessLogicLayer.DTOs;
+using BusinessLogicLayer.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,30 @@ namespace BusinessLogicLayer.Services
     public class TradeRequestService
     {
         private readonly ITradeRequestRepository _tradeRequestRepository;
+        private readonly IUserRepository _userRepository;
 
-        public TradeRequestService(ITradeRequestRepository tradeRequestRepository)
+        public TradeRequestService(ITradeRequestRepository tradeRequestRepository, IUserRepository userRepository)
         {
             _tradeRequestRepository = tradeRequestRepository;
+            _userRepository = userRepository;
         }
 
 
+        public List<TradeRequestDTO> GetTradeRequestsByUserId(int userId)
+        {
+            var requests = _tradeRequestRepository.GetTradeRequestsByUserId(userId);
+
+            foreach (var req in requests)
+            {
+                req.RequesterUsername = _userRepository.GetUsernameById(req.RequesterId);
+                req.ReceiverUsername = _userRepository.GetUsernameById(req.ReceiverId);
+
+                req.OfferedToys = _tradeRequestRepository.GetOfferedToysByTradeRequestId(req.Id);
+                req.RequestedToys = _tradeRequestRepository.GetRequestedToysByTradeRequestId(req.Id);
+            }
+
+            return requests;
+        }
 
 
 

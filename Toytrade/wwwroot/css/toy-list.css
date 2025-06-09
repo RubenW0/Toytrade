@@ -7,11 +7,19 @@
     margin-bottom: 20px;
     padding: 10px;
     box-shadow: 4px 4px #d99873;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
 }
+
+    .toy-card:hover {
+        background-color: #f6ecd8;
+        transform: scale(1.01);
+    }
 
 .toy-image {
     width: 120px;
     height: 120px;
+    object-fit: cover;
     background: #ccc;
     margin-right: 20px;
     border-radius: 8px;
@@ -19,6 +27,7 @@
 
 .toy-info {
     flex: 1;
+    color: #6b4c3b;
 }
 
     .toy-info h3 {
@@ -31,32 +40,12 @@
         margin: 5px 0;
     }
 
-/* Knoppen voor acties zoals maken, bewerken, verwijderen */
-/*.create-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.toy-card-link {
     text-decoration: none;
-    color: white;
-    display: inline-block;
+    color: inherit;
 }
 
-.create-button {
-    background-color: #000000;
-}
-
-.edit-button {
-    background-color: #000000;
-}
-
-.delete-button {
-    background-color: #dc3545;
-}
-
-    .create-button:hover,
-    .edit-button:hover,
-    .delete-button:hover {
-        color: white;
-        opacity: 0.6;
-    }*/
+    .toy-card-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }

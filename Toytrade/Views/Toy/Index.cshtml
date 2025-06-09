@@ -1,33 +1,27 @@
 ﻿@model List<PresentationLayer.ViewModels.ToyViewModel>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toy List</title>
-    @section Styles {
-        <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true">
-    }
-</head>
-<body>
+@{
+    ViewData["Title"] = "Toy List";
+}
 
-    <div class="container">
-        <h1>Toy List</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />
+}
 
-        @foreach (var toy in Model)
-        {
+<div class="container">
+    <h1>Toy List</h1>
+
+    @foreach (var toy in Model)
+    {
+        <a asp-controller="Toy" asp-action="Details" asp-route-id="@toy.Id" class="toy-card-link">
             <div class="toy-card">
                 <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />
-
                 <div class="toy-info">
                     <h3>@toy.Name</h3>
                     <p><strong>Condition:</strong> @toy.Condition</p>
                     <p><strong>Owner:</strong> @toy.Username</p>
                 </div>
             </div>
-        }
-    </div>
-
-</body>
-</html>
+        </a>
+    }
+</div>

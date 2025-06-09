@@ -19,24 +19,24 @@
     </div>
 
     <div>
-        <p>Huidige afbeelding:</p>
+        <p>Current image:</p>
         @if (!string.IsNullOrEmpty(Model.Image))
         {
             <img src="@Model.Image" alt="Toy Image" width="150" />
         }
         else
         {
-            <p><em>Geen afbeelding beschikbaar</em></p>
+            <p><em>No image available</em></p>
         }
     </div>
 
     <div>
-        <label for="ImageFile">Nieuwe afbeelding uploaden (optioneel)</label>
+        <label for="ImageFile">Upload new image (optional)</label>
         <input asp-for="ImageFile" type="file" class="form-control" />
         <span asp-validation-for="ImageFile" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-standard mt-2">Opslaan</button>
+    <button type="submit" class="btn btn-standard mt-2">Save</button>
 </form>
 
 @section Scripts {

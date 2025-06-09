@@ -10,10 +10,14 @@ namespace BusinessLogicLayer.DTOs
     {
         public int Id { get; set; }
         public string Status { get; set; }
-        public int UserIdRequester { get; set; }
-        public int UserIdReceiver { get; set; }
+        public int RequesterId { get; set; }
+        public int ReceiverId { get; set; }
 
-        public List<int> OfferedToyIds { get; set; }
-        public List<int> RequestedToyIds { get; set; }
+        public string RequesterUsername { get; set; }
+        public string ReceiverUsername { get; set; }
+
+        public List<ToyDTO> OfferedToys { get; set; } = new List<ToyDTO>();
+        public List<ToyDTO> RequestedToys { get; set; } = new List<ToyDTO>();
     }
+
 }

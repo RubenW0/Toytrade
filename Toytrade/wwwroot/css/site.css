@@ -130,3 +130,140 @@ nav.navbar {
     font-weight: bold;
     color: #6b4c3b;
 }
+
+.toy-detail-image {
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    object-fit: contain;
+}
+
+.detail-page {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 30px;
+}
+
+.left-section {
+    flex: 2;
+    background-color: #fff8e7; 
+    padding: 1rem;
+    border-radius: 12px;
+    border: 2px solid #d99873;
+    box-shadow: 4px 4px #d99873;
+}
+
+.right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.user-info,
+.other-swaps {
+    background-color: #fffaed;
+    border: 2px solid #6b4c3b;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 2px 2px #d99873;
+}
+
+.user-info h3 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.other-swaps h4 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.detail-page {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 30px;
+}
+
+.left-section {
+    flex: 2;
+    background-color: #fff8e7; /* warm beige passend bij #fdf6e3 */
+    padding: 1rem;
+    border-radius: 12px;
+    border: 2px solid #d99873;
+    box-shadow: 4px 4px #d99873;
+}
+
+.right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.user-info,
+.other-swaps {
+    background-color: #fffaed; /* lichter dan links, zachte toon */
+    border: 2px solid #6b4c3b;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 2px 2px #d99873;
+}
+
+    .user-info h3 {
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+    .other-swaps h4 {
+        margin-top: 0;
+        font-size: 18px;
+    }
+
+/* TradeRequest list*/
+.trade-request-card {
+    background-color: #fff8e7;
+    border: 2px solid #d99873;
+    border-radius: 12px;
+    box-shadow: 4px 4px #d99873;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+    .trade-request-card h5 {
+        margin-top: 1rem;
+        font-size: 18px;
+        border-bottom: 1px solid #d99873;
+        padding-bottom: 0.3rem;
+        color: #6b4c3b;
+    }
+
+.trade-request-info p {
+    margin: 0.3rem 0;
+}
+
+.toy-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-left: 0;
+    list-style: none;
+    margin-top: 1rem;
+}
+
+    .toy-list li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #fffaed;
+        border: 1px solid #d99873;
+        border-radius: 8px;
+        padding: 0.5rem;
+        box-shadow: 2px 2px #d99873;
+        width: 120px;
+        text-align: center;
+    }

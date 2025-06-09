@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogicLayer.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,9 @@ namespace BusinessLogicLayer.IRepositories
 {
     public interface ITradeRequestRepository
     {
+        List<ToyDTO> GetOfferedToysByTradeRequestId(int tradeRequestId);
+        List<ToyDTO> GetRequestedToysByTradeRequestId(int tradeRequestId);
+        List<TradeRequestDTO> GetTradeRequestsByUserId(int userId);
+
     }
 }
