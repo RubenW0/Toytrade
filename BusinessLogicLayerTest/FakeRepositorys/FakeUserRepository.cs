@@ -23,4 +23,10 @@ public class FakeUserRepository : IUserRepository
     public void AddUser(UserDTO user)
     {
     }
+
+    public List<UserDTO> GetAllUsers()
+    {
+        return new List<UserDTO>();
+    }
 }
+

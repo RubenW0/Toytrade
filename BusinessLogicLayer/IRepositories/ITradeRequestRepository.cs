@@ -12,6 +12,6 @@ namespace BusinessLogicLayer.IRepositories
         List<ToyDTO> GetOfferedToysByTradeRequestId(int tradeRequestId);
         List<ToyDTO> GetRequestedToysByTradeRequestId(int tradeRequestId);
         List<TradeRequestDTO> GetTradeRequestsByUserId(int userId);
-
+        public int CreateTradeRequest(int requesterId, int receiverId, List<int> offeredToyIds, List<int> requestedToyIds);
     }
 }

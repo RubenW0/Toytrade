@@ -88,6 +88,36 @@ namespace DataAccessLayer.Repositorys
             return toys;
         }
 
+        public ToyDTO GetToyById(int toyId)
+        {
+            string query = "SELECT id, name, image_path, `condition`, user_id FROM toy WHERE id = @toyId";
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@toyId", toyId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new ToyDTO
+                            {
+                                Id = reader.GetInt32("id"),
+                                Name = reader.GetString("name"),
+                                ImagePath = reader.GetString("image_path"),
+                                Condition = reader.GetString("condition"),
+                                UserId = reader.GetInt32("user_id")
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null; 
+        }
 
         public void AddToy(ToyDTO toy)
         {

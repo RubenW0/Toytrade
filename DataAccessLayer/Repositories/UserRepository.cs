@@ -75,6 +75,32 @@ namespace DataAccessLayer.Repositorys
             cmd.ExecuteNonQuery();
         }
 
+        public List<UserDTO> GetAllUsers()
+        {
+            var users = new List<UserDTO>();
+            string query = "SELECT id, username, password, address FROM User";
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var cmd = new MySqlCommand(query, connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            users.Add(new UserDTO
+                            {
+                                Id = reader.GetInt32("id"),
+                                Username = reader.GetString("username"),
+                                Password = reader.GetString("password"),
+                                Address = reader.GetString("address")
+                            });
+                        }
+                    }
+                }
+            }
+            return users;
+        }
 
     }
 }

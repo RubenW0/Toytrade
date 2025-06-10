@@ -36,9 +36,9 @@ namespace BusinessLogicLayer.Services
             return requests;
         }
 
-
-
-
-
+        public int CreateTradeRequest(int requesterId, int receiverId, List<int> offeredToyIds, List<int> requestedToyIds)
+        {
+            return _tradeRequestRepository.CreateTradeRequest(requesterId, receiverId, offeredToyIds, requestedToyIds);
+        }
     }
 }

@@ -37,5 +37,10 @@ namespace BusinessLogicLayer.Services
             user.Password = _passwordHasher.HashPassword(user, user.Password);
             _userRepository.AddUser(user);
         }
+
+        public List<UserDTO> GetAllUsers()
+        {
+            return _userRepository.GetAllUsers();
+        }
     }
 }

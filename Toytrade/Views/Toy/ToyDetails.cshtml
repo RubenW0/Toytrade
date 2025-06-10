@@ -1,4 +1,4 @@
-﻿@model PresentationLayer.ViewModels.ToyViewModel
+﻿@model PresentationLayer.Models.ToyViewModel
 
 @{
     ViewData["Title"] = Model.Name;
@@ -9,20 +9,26 @@
         <h2>@Model.Name</h2>
         <p><strong>Conditie:</strong> @Model.Condition</p>
         <img src="@Model.Image" alt="@Model.Name" class="toy-detail-image" />
-        <p><strong>Beschrijving:</strong> (beschrijving hier toevoegen indien beschikbaar)</p>
+        <p><strong>Description:</strong> (descripiton when available)</p>
     </div>
 
     <div class="right-section">
         <div class="user-info">
             <h3>@Model.Username</h3>
             <button class="btn-standard">Bekijk profiel</button>
-            <p>14 keer geruild</p>
-            <p>4.2/5 sterren</p>
-            <button class="btn-standard">Ruilverzoek indienen</button>
+            <p>14 times traded</p>
+            <p>4.2/5 stars</p>
+
+            <button class="btn-standard">
+                <a href="@Url.Action("Create", "TradeRequest", new { chosenToyId = Model.Id })">
+                    Submit a Trade Request
+                </a>
+            </button>
+
         </div>
 
         <div class="other-swaps">
-            <h4>Andere ruilverzoeken</h4>
+            <h4>Other traderequests</h4>
 
         </div>
     </div>

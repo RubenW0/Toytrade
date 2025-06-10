@@ -109,4 +109,71 @@ public class TradeRequestRepository : ITradeRequestRepository
         return requests;
     }
 
+    public int CreateTradeRequest(int requesterId, int receiverId, List<int> offeredToyIds, List<int> requestedToyIds)
+    {
+        int tradeRequestId = 0;
+        using (var connection = new MySqlConnection(_connectionString))
+        {
+            connection.Open();
+            // Begin een transactie zodat we alle stappen kunnen terugdraaien bij een fout
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    // 1. Voeg het basis ruilverzoek toe
+                    string insertTradeRequestQuery = @"
+                        INSERT INTO traderequest (status, user_id_requester, user_id_receiver)
+                        VALUES ('Pending', @requesterId, @receiverId);
+                        SELECT LAST_INSERT_ID();";
+
+                    using (var cmd = new MySqlCommand(insertTradeRequestQuery, connection, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@requesterId", requesterId);
+                        cmd.Parameters.AddWithValue("@receiverId", receiverId);
+                        tradeRequestId = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+
+                    // 2. Voeg de aangeboden speelgoedjes toe
+                    string insertOfferedToyQuery = @"
+                        INSERT INTO traderequest_offeredtoy (toy_id, traderequest_id)
+                        VALUES (@toyId, @tradeRequestId)";
+                    foreach (var toyId in offeredToyIds)
+                    {
+                        using (var cmd = new MySqlCommand(insertOfferedToyQuery, connection, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@toyId", toyId);
+                            cmd.Parameters.AddWithValue("@tradeRequestId", tradeRequestId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    // 3. Voeg de gevraagde speelgoedjes toe
+                    string insertRequestedToyQuery = @"
+                        INSERT INTO traderequest_requestedtoy (toy_id, traderequest_id)
+                        VALUES (@toyId, @tradeRequestId)";
+                    foreach (var toyId in requestedToyIds)
+                    {
+                        using (var cmd = new MySqlCommand(insertRequestedToyQuery, connection, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@toyId", toyId);
+                            cmd.Parameters.AddWithValue("@tradeRequestId", tradeRequestId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    // Commit de transactie als alles succesvol is
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    // Rollback indien er iets misgaat
+                    transaction.Rollback();
+                    // Hier kun je de fout loggen of opnieuw throwen
+                    throw new Exception("Fout bij het aanmaken van het ruilverzoek: " + ex.Message);
+                }
+            }
+        }
+
+        return tradeRequestId;
+    }
 }

@@ -7,8 +7,10 @@ namespace BusinessLogicLayer.IRepositories
     {
         List<ToyDTO> GetAllToys();
         List<ToyDTO> GetToysByUserId(int userId);
+        ToyDTO GetToyById(int toyId);
         void AddToy(ToyDTO toy);
         void UpdateToy(ToyDTO toy);
         void DeleteToy(int toyId);
+
     }
 }

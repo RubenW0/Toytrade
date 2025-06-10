@@ -44,6 +44,12 @@ namespace BusinessLogicLayer.Services
             return toys;
         }
 
+        public ToyDTO GetToyById(int toyId)
+        {
+            return _toyRepository.GetToyById(toyId);
+        }
+
+
         public void AddToy(ToyDTO toy)
         {
             if (toy.ImageFile != null && toy.ImageFile.Length > 0)

@@ -1,7 +1,7 @@
 ﻿using PresentationLayer.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace PresentationLayer.ViewModels
+namespace PresentationLayer.Models
 {
     public class ToyViewModel
     {
@@ -17,6 +17,7 @@ namespace PresentationLayer.ViewModels
 
         public string? Username { get; set; }
 
-        public IFormFile? ImageFile { get; set; } 
+        public IFormFile? ImageFile { get; set; }
+        public int UserId { get; set; }
     }
 }

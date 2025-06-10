@@ -1,0 +1,33 @@
+﻿<h2>Nieuw Ruilverzoek Aanmaken</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="ReceiverId" value="@Model.ReceiverId" />
+
+    <fieldset class="mt-3">
+        <legend>Speelgoed dat je aanbiedt</legend>
+        @foreach (var toy in Model.MyToys)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="OfferedToyIds[]" value="@toy.Id"
+                       id="Offered_@toy.Id" @(Model.OfferedToyIds.Contains(toy.Id) ? "checked" : "") />
+                <label class="form-check-label" for="Offered_@toy.Id">@toy.Name (@toy.Condition)</label>
+            </div>
+        }
+    </fieldset>
+
+    <fieldset class="mt-3">
+        <legend>Speelgoed van de ontvanger dat je wilt ruilen</legend>
+        @foreach (var toy in Model.ReceiverToys)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="RequestedToyIds[]" value="@toy.Id"
+                       id="Requested_@toy.Id" @(Model.RequestedToyIds.Contains(toy.Id) ? "checked" : "") />
+                <label class="form-check-label" for="Requested_@toy.Id">@toy.Name (@toy.Condition)</label>
+            </div>
+        }
+    </fieldset>
+
+    <button type="submit" class="btn btn-success mt-3">Start Ruil</button>
+</form>
