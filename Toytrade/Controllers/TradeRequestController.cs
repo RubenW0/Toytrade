@@ -12,13 +12,11 @@ namespace PresentationLayer.Controllers
     {
         private readonly TradeRequestService _tradeRequestService;
         private readonly ToyService _toyService;
-        private readonly UserService _userService;
 
-        public TradeRequestController(TradeRequestService tradeRequestService, ToyService toyService, UserService userService)
+        public TradeRequestController(TradeRequestService tradeRequestService, ToyService toyService)
         {
             _tradeRequestService = tradeRequestService;
             _toyService = toyService;
-            _userService = userService;
         }
 
         public IActionResult MyRequests()
@@ -31,7 +29,7 @@ namespace PresentationLayer.Controllers
             }
 
             int userId = int.Parse(userIdString);
-            var toyDTOs = _toyService.GetAllToys().ToList(); 
+            var toyDTOs = _toyService.GetAllToys().ToList();
 
             var requests = _tradeRequestService.GetTradeRequestsByUserId(userId);
 
@@ -79,6 +77,7 @@ namespace PresentationLayer.Controllers
             }
 
             int receiverId = chosenToy.UserId;
+            var selectedRequestedToyIds = new List<int> { chosenToyId };
 
             var receiverToys = _toyService.GetAllToys()
                 .Where(toy => toy.UserId == receiverId)
@@ -88,22 +87,27 @@ namespace PresentationLayer.Controllers
                     Name = toy.Name,
                     Image = toy.Image,
                     Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                }).ToList();
+                })
+                .OrderByDescending(toy => selectedRequestedToyIds.Contains(toy.Id))
+                .ToList();
 
-            var selectedRequestedToyIds = new List<int> { chosenToyId };
-
-            var model = new TradeRequestCreateViewModel
-            {
-                ReceiverId = receiverId, 
-                RequestedToyIds = selectedRequestedToyIds, 
-                ReceiverToys = receiverToys, 
-                MyToys = _toyService.GetAllToys().Where(t => t.UserId == currentUserId).Select(t => new ToyViewModel
+            var myToys = _toyService.GetAllToys()
+                .Where(t => t.UserId == currentUserId)
+                .Select(t => new ToyViewModel
                 {
                     Id = t.Id,
                     Name = t.Name,
                     Image = t.Image,
                     Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                }).ToList()
+                })
+                .ToList();
+
+            var model = new TradeRequestCreateViewModel
+            {
+                ReceiverId = receiverId,
+                RequestedToyIds = selectedRequestedToyIds,
+                ReceiverToys = receiverToys,
+                MyToys = myToys
             };
 
             return View(model);
@@ -113,11 +117,6 @@ namespace PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TradeRequestCreateViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             string? userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString))
             {
@@ -127,19 +126,48 @@ namespace PresentationLayer.Controllers
             int requesterId = int.Parse(userIdString);
             int receiverId = model.ReceiverId;
 
-            if ((model.OfferedToyIds == null || !model.OfferedToyIds.Any()) &&
-                (model.RequestedToyIds == null || !model.RequestedToyIds.Any()))
+            if (!ModelState.IsValid ||
+                ((model.OfferedToyIds == null || !model.OfferedToyIds.Any()) &&
+                 (model.RequestedToyIds == null || !model.RequestedToyIds.Any())))
             {
-                ModelState.AddModelError("", "Selecteer minimaal één aangeboden en/of gevraagde toy.");
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("", "Select at least one offered and/or requested toy.");
+                }
+
+                model.MyToys = _toyService.GetAllToys()
+                    .Where(t => t.UserId == requesterId)
+                    .Select(t => new ToyViewModel
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Image = t.Image,
+                        Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                    })
+                    .OrderByDescending(t => model.OfferedToyIds?.Contains(t.Id) ?? false)
+                    .ToList();
+
+                model.ReceiverToys = _toyService.GetAllToys()
+                    .Where(t => t.UserId == receiverId)
+                    .Select(t => new ToyViewModel
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Image = t.Image,
+                        Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                    })
+                    .OrderByDescending(t => model.RequestedToyIds?.Contains(t.Id) ?? false)
+                    .ToList();
+
                 return View(model);
             }
 
             int tradeRequestId = _tradeRequestService.CreateTradeRequest(
-                requesterId, receiverId, model.OfferedToyIds ?? new List<int>(), model.RequestedToyIds ?? new List<int>());
+                requesterId, receiverId,
+                model.OfferedToyIds ?? new List<int>(),
+                model.RequestedToyIds ?? new List<int>());
 
             return RedirectToAction("MyRequests");
         }
-
-
     }
 }

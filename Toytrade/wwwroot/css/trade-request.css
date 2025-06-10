@@ -1,0 +1,106 @@
+﻿/* Container van beide kolommen */
+.trade-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+/* Elke kolom met speelgoed */
+.trade-column {
+    flex: 1;
+    background-color: #fff8e7;
+    border: 2px solid #d99873;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 4px 4px #d99873;
+    display: flex;
+    flex-direction: column;
+    max-height: 450px;
+}
+
+/* Scrollbare lijst met speelgoedkaarten */
+.toy-scroll-list {
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Stijl voor elke speelgoedkaart */
+.toy-card {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background-color: #fffaed;
+    border: 2px solid #d99873;
+    border-radius: 10px;
+    box-shadow: 2px 2px #d99873;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border 0.2s;
+    position: relative;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+    /* Afbeelding binnen de kaart */
+    .toy-card img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 1px solid #d99873;
+    }
+
+    /* Verberg checkbox zelf */
+    .toy-card input[type="checkbox"] {
+        display: none;
+    }
+
+    /* Geef de hele kaart een andere stijl als de checkbox geselecteerd is */
+    .toy-card:has(input[type="checkbox"]:checked) {
+        border: 2px solid #007bff;
+        background-color: #e6f0ff;
+    }
+
+    /* Hover-effect voor kaart */
+    .toy-card:hover {
+        background-color: #f9f9f9;
+    }
+
+/* Actieknop onderaan het formulier */
+.action-buttons {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-standard {
+    background-color: #d99873;
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .btn-standard:hover {
+        background-color: #bf7754;
+    }
+
+/* Eventuele extra sectie voor opmerkingen */
+.remarks-section {
+    margin-top: 1.5rem;
+}
+
+    .remarks-section label {
+        font-weight: bold;
+        color: #6b4c3b;
+        display: block;
+        margin-bottom: 0.5rem;
+    }

@@ -7,7 +7,7 @@
 <div class="detail-page">
     <div class="left-section">
         <h2>@Model.Name</h2>
-        <p><strong>Conditie:</strong> @Model.Condition</p>
+        <p><strong>Condition:</strong> @Model.Condition</p>
         <img src="@Model.Image" alt="@Model.Name" class="toy-detail-image" />
         <p><strong>Description:</strong> (descripiton when available)</p>
     </div>
@@ -15,15 +15,13 @@
     <div class="right-section">
         <div class="user-info">
             <h3>@Model.Username</h3>
-            <button class="btn-standard">Bekijk profiel</button>
+            <button class="btn-standard">View profile</button>
             <p>14 times traded</p>
             <p>4.2/5 stars</p>
 
-            <button class="btn-standard">
-                <a href="@Url.Action("Create", "TradeRequest", new { chosenToyId = Model.Id })">
-                    Submit a Trade Request
-                </a>
-            </button>
+            <a href="@Url.Action("Create", "TradeRequest", new { chosenToyId = Model.Id })" class="btn-standard">
+                Submit a Trade Request
+            </a>
 
         </div>
 
