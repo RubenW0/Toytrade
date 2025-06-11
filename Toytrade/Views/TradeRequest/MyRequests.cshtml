@@ -4,16 +4,16 @@
     <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />
 }
 
-<h1>My Trade Requests</h1>  
+<h1>My Trade Requests</h1>
 
-@foreach (var request in Model)  
-{  
-   <div class="trade-request-card">  
-       <div class="trade-request-info">  
-           <p><strong>Status:</strong> @request.Status</p>  
-           <p><strong>From:</strong> @request.RequesterUsername</p>  
-           <p><strong>To:</strong> @request.ReceiverUsername</p>  
-       </div>
+@foreach (var request in Model)
+{
+    <div class="trade-request-card">
+        <div class="trade-request-info">
+            <p><strong>Status:</strong> @request.Status</p>
+            <p><strong>From:</strong> @request.RequesterUsername</p>
+            <p><strong>To:</strong> @request.ReceiverUsername</p>
+        </div>
 
         <div>
             <h5>Offered Toys</h5>
@@ -53,5 +53,32 @@
             </div>
         </div>
 
-   </div>  
+        <div class="trade-request-actions">
+            @if (request.Status == "Pending")
+            {
+                if (request.ReceiverUsername == request.Username)
+                {
+                    <form asp-controller="TradeRequest" asp-action="Respond" method="post" style="display:inline;">
+                        <input type="hidden" name="requestId" value="@request.Id" />
+                        <input type="hidden" name="response" value="accept" />
+                        <button type="submit" class="btn btn-success">Accept</button>
+                    </form>
+
+                    <form asp-controller="TradeRequest" asp-action="Respond" method="post" style="display:inline;">
+                        <input type="hidden" name="requestId" value="@request.Id" />
+                        <input type="hidden" name="response" value="decline" />
+                        <button type="submit" class="btn btn-danger">Decline</button>
+                    </form>
+                }
+                else
+                {
+                    <p><em>Waiting for response from @request.ReceiverUsername...</em></p>
+                }
+            }
+            else
+            {
+                <p><strong>Final Status:</strong> @request.Status</p>
+            }
+        </div>
+    </div>
 }

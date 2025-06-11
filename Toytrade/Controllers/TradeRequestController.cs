@@ -22,22 +22,24 @@ namespace PresentationLayer.Controllers
         public IActionResult MyRequests()
         {
             string? userIdString = HttpContext.Session.GetString("UserId");
+            string? currentUsername = HttpContext.Session.GetString("Username");
 
-            if (string.IsNullOrEmpty(userIdString))
+            if (string.IsNullOrEmpty(userIdString) || string.IsNullOrEmpty(currentUsername))
             {
                 return RedirectToAction("Login", "User");
             }
 
             int userId = int.Parse(userIdString);
             var toyDTOs = _toyService.GetAllToys().ToList();
-
             var requests = _tradeRequestService.GetTradeRequestsByUserId(userId);
 
             var viewModelList = requests.Select(request => new TradeRequestViewModel
             {
-                Status = request.Status,
+                Id = request.Id,
+                Status = request.Status.ToString(),
                 RequesterUsername = request.RequesterUsername,
                 ReceiverUsername = request.ReceiverUsername,
+                Username = currentUsername,
                 OfferedToys = request.OfferedToys.Select(toy => new ToyViewModel
                 {
                     Id = toy.Id,
@@ -58,6 +60,8 @@ namespace PresentationLayer.Controllers
 
             return View(viewModelList);
         }
+
+
 
         [HttpGet]
         public IActionResult Create(int chosenToyId)
@@ -114,7 +118,6 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(TradeRequestCreateViewModel model)
         {
             string? userIdString = HttpContext.Session.GetString("UserId");
@@ -169,5 +172,21 @@ namespace PresentationLayer.Controllers
 
             return RedirectToAction("MyRequests");
         }
+
+        [HttpPost]
+        public IActionResult Respond(int requestId, string response)
+        {
+            string? userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            bool accept = response == "accept";
+            _tradeRequestService.RespondToTradeRequest(requestId, accept);
+
+            return RedirectToAction("MyRequests");
+        }
+
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessLogicLayer.DTOs.Enums;
 
 namespace BusinessLogicLayer.DTOs
 {
     public class TradeRequestDTO
     {
         public int Id { get; set; }
-        public string Status { get; set; }
+        public TradeRequestStatus Status { get; set; }
         public int RequesterId { get; set; }
         public int ReceiverId { get; set; }
 

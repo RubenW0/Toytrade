@@ -6,6 +6,7 @@ namespace PresentationLayer.Models
 {
     public class TradeRequestViewModel
     {
+        public int Id { get; set; }
         public string Status { get; set; }
         public string RequesterUsername { get; set; }
         public string ReceiverUsername { get; set; }

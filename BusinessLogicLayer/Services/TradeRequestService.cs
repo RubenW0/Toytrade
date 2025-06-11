@@ -40,5 +40,12 @@ namespace BusinessLogicLayer.Services
         {
             return _tradeRequestRepository.CreateTradeRequest(requesterId, receiverId, offeredToyIds, requestedToyIds);
         }
+
+        public void RespondToTradeRequest(int requestId, bool accept)
+        {
+            var newStatus = accept ? "Accepted" : "Declined";
+            _tradeRequestRepository.UpdateTradeRequestStatus(requestId, newStatus);
+        }
+
     }
 }
