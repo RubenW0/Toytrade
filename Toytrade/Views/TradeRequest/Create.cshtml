@@ -11,6 +11,12 @@
     <div class="trade-container">
         <div class="trade-column">
             <h3>Your toys:</h3>
+
+            <div class="validation-message">
+                <span asp-validation-for="OfferedToyIds" class="text-danger"></span>
+            </div>
+
+
             <div class="toy-scroll-list">
                 @foreach (var toy in Model.MyToys)
                 {
@@ -29,6 +35,12 @@
 
         <div class="trade-column">
             <h3>Toys Receiver:</h3>
+
+            <div class="validation-message">
+                <span asp-validation-for="RequestedToyIds" class="text-danger"></span>
+            </div>
+
+
             <div class="toy-scroll-list">
 @foreach (var toy in Model.ReceiverToys)
 {

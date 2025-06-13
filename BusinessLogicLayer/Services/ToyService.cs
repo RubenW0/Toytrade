@@ -13,7 +13,7 @@ namespace BusinessLogicLayer.Services
         private readonly IHostEnvironment? _env;
 
 
-        public ToyService(IToyRepository toyRepository, IUserRepository userRepository, IHostEnvironment? env)
+        public ToyService(IToyRepository toyRepository, IUserRepository userRepository, IHostEnvironment? env = null)
         {
             _toyRepository = toyRepository;
             _userRepository = userRepository;

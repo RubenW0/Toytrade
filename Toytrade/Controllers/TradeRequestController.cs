@@ -129,15 +129,18 @@ namespace PresentationLayer.Controllers
             int requesterId = int.Parse(userIdString);
             int receiverId = model.ReceiverId;
 
-            if (!ModelState.IsValid ||
-                ((model.OfferedToyIds == null || !model.OfferedToyIds.Any()) &&
-                 (model.RequestedToyIds == null || !model.RequestedToyIds.Any())))
+            if (model.OfferedToyIds == null || !model.OfferedToyIds.Any())
             {
-                if (!ModelState.IsValid)
-                {
-                    ModelState.AddModelError("", "Select at least one offered and/or requested toy.");
-                }
+                ModelState.AddModelError("OfferedToyIds", "Please select at least one toy to offer.");
+            }
 
+            if (model.RequestedToyIds == null || !model.RequestedToyIds.Any())
+            {
+                ModelState.AddModelError("RequestedToyIds", "Please select at least one toy to request.");
+            }
+
+            if (!ModelState.IsValid)
+            {
                 model.MyToys = _toyService.GetAllToys()
                     .Where(t => t.UserId == requesterId)
                     .Select(t => new ToyViewModel
@@ -172,6 +175,7 @@ namespace PresentationLayer.Controllers
 
             return RedirectToAction("MyRequests");
         }
+
 
         [HttpPost]
         public IActionResult Respond(int requestId, string response)

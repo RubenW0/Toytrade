@@ -5,7 +5,6 @@ namespace PresentationLayer.Models
 {
     public class TradeRequestCreateViewModel
     {
-        [Required(ErrorMessage = "Selecteer een ontvanger.")]
         public int ReceiverId { get; set; }
 
         public List<int> OfferedToyIds { get; set; } = new List<int>();

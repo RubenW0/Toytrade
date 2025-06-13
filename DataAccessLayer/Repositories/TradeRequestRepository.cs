@@ -17,10 +17,13 @@ public class TradeRequestRepository : ITradeRequestRepository
     public List<ToyDTO> GetOfferedToysByTradeRequestId(int tradeRequestId)
     {
         var toys = new List<ToyDTO>();
-        string query = @"SELECT t.id, t.name, t.image_path
-                     FROM toy t
-                     JOIN traderequest_offeredtoy ot ON t.id = ot.toy_id
-                     WHERE ot.traderequest_id = @tradeRequestId";
+        string query =
+            @"SELECT t.id, t.name, t.image_path
+            FROM toy t
+            JOIN traderequest_offeredtoy ot ON t.id = ot.toy_id
+            WHERE ot.traderequest_id = @tradeRequestId"
+        ;
+
 
         using (var connection = new MySqlConnection(_connectionString))
         {

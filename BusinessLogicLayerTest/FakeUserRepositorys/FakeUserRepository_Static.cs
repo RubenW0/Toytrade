@@ -1,23 +1,23 @@
 ﻿using BusinessLogicLayer.DTOs;
 using BusinessLogicLayer.IRepositories;
 
-public class FakeUserRepository : IUserRepository
+public class FakeUserRepository_Static : IUserRepository
 {
+    private readonly Dictionary<int, string> _users = new()
+    {
+        { 1, "User1" },
+        { 2, "User2" },
+        { 3, "User3" }
+    };
+
     public string GetUsernameById(int userId)
     {
-        return $"User{userId}";
+        return _users.TryGetValue(userId, out var username) ? username : null;
     }
 
     public UserDTO AuthenticateUser(string username)
     {
-        // user authentication  
-        return new UserDTO
-        {
-            Id = 1,
-            Username = username,
-            Password = "hashedpassword",
-            Address = "123 Test Street"
-        };
+        return null;
     }
 
     public void AddUser(UserDTO user)
@@ -29,4 +29,3 @@ public class FakeUserRepository : IUserRepository
         return new List<UserDTO>();
     }
 }
-
