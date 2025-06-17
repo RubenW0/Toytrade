@@ -1,0 +1,38 @@
+﻿@model PresentationLayer.Models.PublicProfileViewModel  
+
+<h2>@Model.Username's Profile</h2>  
+
+@if (ViewBag.Error != null)  
+{  
+   <div class="alert alert-danger" role="alert">  
+       @ViewBag.Error  
+   </div>  
+}  
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />
+}
+
+@if (Model.Toys != null && Model.Toys.Any())  
+{  
+   <h3>Toys</h3>  
+   <div class="container">  
+       @foreach (var toy in Model.Toys)  
+       {  
+           <a asp-controller="Toy" asp-action="Details" asp-route-id="@toy.Id" class="toy-card-link">  
+               <div class="toy-card">  
+                   <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />  
+                   <div class="toy-info">  
+                       <h3>@toy.Name</h3>  
+                       <p><strong>Condition:</strong> @toy.Condition</p>  
+                       <p><strong>Owner:</strong> @Model.Username</p>  
+                   </div>  
+               </div>  
+           </a>  
+       }  
+   </div>  
+}  
+else  
+{  
+   <p>This user has not added any toys yet.</p>  
+}

@@ -4,12 +4,19 @@
     ViewData["Title"] = "Toy List";
 }
 
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
 @section Styles {
     <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />
 }
 
 <div class="container">
-    <h1>Toy List</h1>
+    <h2>Toy List</h2>
 
     @foreach (var toy in Model)
     {

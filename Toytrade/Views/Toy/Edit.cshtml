@@ -1,7 +1,14 @@
 ﻿@model PresentationLayer.Models.ToyViewModel
 @using PresentationLayer.Models.Enums
 
-<h2>Speelgoed Bewerken</h2>
+<h2>Edit toy</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
 
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />

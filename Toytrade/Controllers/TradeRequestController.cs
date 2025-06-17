@@ -21,176 +21,208 @@ namespace PresentationLayer.Controllers
 
         public IActionResult MyRequests()
         {
-            string? userIdString = HttpContext.Session.GetString("UserId");
-            string? currentUsername = HttpContext.Session.GetString("Username");
-
-            if (string.IsNullOrEmpty(userIdString) || string.IsNullOrEmpty(currentUsername))
+            try
             {
-                return RedirectToAction("Login", "User");
+                string? userIdString = HttpContext.Session.GetString("UserId");
+                string? currentUsername = HttpContext.Session.GetString("Username");
+
+                if (string.IsNullOrEmpty(userIdString) || string.IsNullOrEmpty(currentUsername))
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                int userId = int.Parse(userIdString);
+                var toyDTOs = _toyService.GetAllToys().ToList();
+                var requests = _tradeRequestService.GetTradeRequestsByUserId(userId);
+
+                var viewModelList = requests.Select(request => new TradeRequestViewModel
+                {
+                    Id = request.Id,
+                    Status = request.Status.ToString(),
+                    RequesterUsername = request.RequesterUsername,
+                    ReceiverUsername = request.ReceiverUsername,
+                    Username = currentUsername,
+                    OfferedToys = request.OfferedToys.Select(toy => new ToyViewModel
+                    {
+                        Id = toy.Id,
+                        Name = toy.Name,
+                        Image = toy.Image,
+                        Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                        Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
+                    }).ToList(),
+                    RequestedToys = request.RequestedToys.Select(toy => new ToyViewModel
+                    {
+                        Id = toy.Id,
+                        Name = toy.Name,
+                        Image = toy.Image,
+                        Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                        Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
+                    }).ToList()
+                }).ToList();
+
+                return View(viewModelList);
             }
-
-            int userId = int.Parse(userIdString);
-            var toyDTOs = _toyService.GetAllToys().ToList();
-            var requests = _tradeRequestService.GetTradeRequestsByUserId(userId);
-
-            var viewModelList = requests.Select(request => new TradeRequestViewModel
+            catch (Exception ex)
             {
-                Id = request.Id,
-                Status = request.Status.ToString(),
-                RequesterUsername = request.RequesterUsername,
-                ReceiverUsername = request.ReceiverUsername,
-                Username = currentUsername,
-                OfferedToys = request.OfferedToys.Select(toy => new ToyViewModel
-                {
-                    Id = toy.Id,
-                    Name = toy.Name,
-                    Image = toy.Image,
-                    Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                    Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
-                }).ToList(),
-                RequestedToys = request.RequestedToys.Select(toy => new ToyViewModel
-                {
-                    Id = toy.Id,
-                    Name = toy.Name,
-                    Image = toy.Image,
-                    Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                    Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
-                }).ToList()
-            }).ToList();
-
-            return View(viewModelList);
+                ViewBag.Error = "An error occurred while retrieving your trade requests.";
+                Console.WriteLine(ex);
+                return View(new List<TradeRequestViewModel>());
+            }
         }
-
-
 
         [HttpGet]
         public IActionResult Create(int chosenToyId)
         {
-            string? userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString))
+            try
             {
-                return RedirectToAction("Login", "User");
-            }
-
-            int currentUserId = int.Parse(userIdString);
-
-            var chosenToy = _toyService.GetToyById(chosenToyId);
-            if (chosenToy == null)
-            {
-                return NotFound();
-            }
-
-            int receiverId = chosenToy.UserId;
-            var selectedRequestedToyIds = new List<int> { chosenToyId };
-
-            var receiverToys = _toyService.GetAllToys()
-                .Where(toy => toy.UserId == receiverId)
-                .Select(toy => new ToyViewModel
+                string? userIdString = HttpContext.Session.GetString("UserId");
+                if (string.IsNullOrEmpty(userIdString))
                 {
-                    Id = toy.Id,
-                    Name = toy.Name,
-                    Image = toy.Image,
-                    Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                })
-                .OrderByDescending(toy => selectedRequestedToyIds.Contains(toy.Id))
-                .ToList();
+                    return RedirectToAction("Login", "User");
+                }
 
-            var myToys = _toyService.GetAllToys()
-                .Where(t => t.UserId == currentUserId)
-                .Select(t => new ToyViewModel
+                int currentUserId = int.Parse(userIdString);
+
+                var chosenToy = _toyService.GetToyById(chosenToyId);
+                if (chosenToy == null)
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Image = t.Image,
-                    Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                })
-                .ToList();
+                    return NotFound();
+                }
 
-            var model = new TradeRequestCreateViewModel
+                int receiverId = chosenToy.UserId;
+                var selectedRequestedToyIds = new List<int> { chosenToyId };
+
+                var receiverToys = _toyService.GetAllToys()
+                    .Where(toy => toy.UserId == receiverId)
+                    .Select(toy => new ToyViewModel
+                    {
+                        Id = toy.Id,
+                        Name = toy.Name,
+                        Image = toy.Image,
+                        Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                    })
+                    .OrderByDescending(toy => selectedRequestedToyIds.Contains(toy.Id))
+                    .ToList();
+
+                var myToys = _toyService.GetAllToys()
+                    .Where(t => t.UserId == currentUserId)
+                    .Select(t => new ToyViewModel
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Image = t.Image,
+                        Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                    })
+                    .ToList();
+
+                var model = new TradeRequestCreateViewModel
+                {
+                    ReceiverId = receiverId,
+                    RequestedToyIds = selectedRequestedToyIds,
+                    ReceiverToys = receiverToys,
+                    MyToys = myToys
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
             {
-                ReceiverId = receiverId,
-                RequestedToyIds = selectedRequestedToyIds,
-                ReceiverToys = receiverToys,
-                MyToys = myToys
-            };
-
-            return View(model);
+                ViewBag.Error = "An error occurred while preparing the trade request.";
+                Console.WriteLine(ex);
+                return View(new TradeRequestCreateViewModel());
+            }
         }
 
         [HttpPost]
         public IActionResult Create(TradeRequestCreateViewModel model)
         {
-            string? userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString))
+            try
             {
-                return RedirectToAction("Login", "User");
+                string? userIdString = HttpContext.Session.GetString("UserId");
+                if (string.IsNullOrEmpty(userIdString))
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                int requesterId = int.Parse(userIdString);
+                int receiverId = model.ReceiverId;
+
+                if (model.OfferedToyIds == null || !model.OfferedToyIds.Any())
+                {
+                    ModelState.AddModelError("OfferedToyIds", "Please select at least one toy to offer.");
+                }
+
+                if (model.RequestedToyIds == null || !model.RequestedToyIds.Any())
+                {
+                    ModelState.AddModelError("RequestedToyIds", "Please select at least one toy to request.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    model.MyToys = _toyService.GetAllToys()
+                        .Where(t => t.UserId == requesterId)
+                        .Select(t => new ToyViewModel
+                        {
+                            Id = t.Id,
+                            Name = t.Name,
+                            Image = t.Image,
+                            Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                        })
+                        .OrderByDescending(t => model.OfferedToyIds?.Contains(t.Id) ?? false)
+                        .ToList();
+
+                    model.ReceiverToys = _toyService.GetAllToys()
+                        .Where(t => t.UserId == receiverId)
+                        .Select(t => new ToyViewModel
+                        {
+                            Id = t.Id,
+                            Name = t.Name,
+                            Image = t.Image,
+                            Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                        })
+                        .OrderByDescending(t => model.RequestedToyIds?.Contains(t.Id) ?? false)
+                        .ToList();
+
+                    return View(model);
+                }
+
+                int tradeRequestId = _tradeRequestService.CreateTradeRequest(
+                    requesterId, receiverId,
+                    model.OfferedToyIds ?? new List<int>(),
+                    model.RequestedToyIds ?? new List<int>());
+
+                return RedirectToAction("MyRequests");
             }
-
-            int requesterId = int.Parse(userIdString);
-            int receiverId = model.ReceiverId;
-
-            if (model.OfferedToyIds == null || !model.OfferedToyIds.Any())
+            catch (Exception ex)
             {
-                ModelState.AddModelError("OfferedToyIds", "Please select at least one toy to offer.");
-            }
-
-            if (model.RequestedToyIds == null || !model.RequestedToyIds.Any())
-            {
-                ModelState.AddModelError("RequestedToyIds", "Please select at least one toy to request.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                model.MyToys = _toyService.GetAllToys()
-                    .Where(t => t.UserId == requesterId)
-                    .Select(t => new ToyViewModel
-                    {
-                        Id = t.Id,
-                        Name = t.Name,
-                        Image = t.Image,
-                        Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                    })
-                    .OrderByDescending(t => model.OfferedToyIds?.Contains(t.Id) ?? false)
-                    .ToList();
-
-                model.ReceiverToys = _toyService.GetAllToys()
-                    .Where(t => t.UserId == receiverId)
-                    .Select(t => new ToyViewModel
-                    {
-                        Id = t.Id,
-                        Name = t.Name,
-                        Image = t.Image,
-                        Condition = Enum.TryParse<ToyCondition>(t.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                    })
-                    .OrderByDescending(t => model.RequestedToyIds?.Contains(t.Id) ?? false)
-                    .ToList();
-
+                ViewBag.Error = "An error occurred while creating the trade request.";
+                Console.WriteLine(ex);
                 return View(model);
             }
-
-            int tradeRequestId = _tradeRequestService.CreateTradeRequest(
-                requesterId, receiverId,
-                model.OfferedToyIds ?? new List<int>(),
-                model.RequestedToyIds ?? new List<int>());
-
-            return RedirectToAction("MyRequests");
         }
-
 
         [HttpPost]
         public IActionResult Respond(int requestId, string response)
         {
-            string? userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString))
+            try
             {
-                return RedirectToAction("Login", "User");
+                string? userIdString = HttpContext.Session.GetString("UserId");
+                if (string.IsNullOrEmpty(userIdString))
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                bool accept = response == "accept";
+                _tradeRequestService.RespondToTradeRequest(requestId, accept);
+
+                return RedirectToAction("MyRequests");
             }
-
-            bool accept = response == "accept";
-            _tradeRequestService.RespondToTradeRequest(requestId, accept);
-
-            return RedirectToAction("MyRequests");
+            catch (Exception ex)
+            {
+                ViewBag.Error = "An error occurred while responding to the trade request.";
+                Console.WriteLine(ex);
+                return RedirectToAction("MyRequests");
+            }
         }
-
     }
 }

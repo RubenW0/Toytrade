@@ -4,6 +4,13 @@
 
 <h2>Add New Toy</h2>
 
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
 <form asp-action="AddToy" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label asp-for="Name">Name</label>

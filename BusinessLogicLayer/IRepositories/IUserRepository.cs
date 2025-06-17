@@ -9,5 +9,6 @@ namespace BusinessLogicLayer.IRepositories
         UserDTO AuthenticateUser(string username);
         void AddUser(UserDTO user);
         public List<UserDTO> GetAllUsers();
+        UserDTO GetUserById(int userId);
     }
 }

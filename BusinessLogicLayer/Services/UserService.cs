@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace BusinessLogicLayer.Services
 {
@@ -13,34 +14,73 @@ namespace BusinessLogicLayer.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<UserDTO> _passwordHasher;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, IPasswordHasher<UserDTO> passwordHasher)
+        public UserService(IUserRepository userRepository, IPasswordHasher<UserDTO> passwordHasher, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _logger = logger;
         }
+
         public UserDTO Login(string username, string password)
         {
-            var user = _userRepository.AuthenticateUser(username); 
+            try
+            {
+                var user = _userRepository.AuthenticateUser(username);
 
-            if (user == null)
-                return null;
+                if (user == null)
+                    return null;
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+                var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
 
-            return result == PasswordVerificationResult.Success ? user : null;
+                return result == PasswordVerificationResult.Success ? user : null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while logging in user '{username}' in service.");
+                throw;
+            }
         }
-
 
         public void Register(UserDTO user)
         {
-            user.Password = _passwordHasher.HashPassword(user, user.Password);
-            _userRepository.AddUser(user);
+            try
+            {
+                user.Password = _passwordHasher.HashPassword(user, user.Password);
+                _userRepository.AddUser(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while registering user '{user.Username}' in service.");
+                throw;
+            }
         }
 
         public List<UserDTO> GetAllUsers()
         {
-            return _userRepository.GetAllUsers();
+            try
+            {
+                return _userRepository.GetAllUsers();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving all users in service.");
+                throw;
+            }
+        }
+
+        public UserDTO GetUserById(int userId)
+        {
+            try
+            {
+                return _userRepository.GetUserById(userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while retrieving user with ID {userId} in service.");
+                throw;
+            }
         }
     }
 }

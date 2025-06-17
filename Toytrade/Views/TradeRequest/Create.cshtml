@@ -2,7 +2,14 @@
 
 <link rel="stylesheet" href="~/css/trade-request.css" />
 
-<h1>Traderequest</h1>
+<h2>Traderequest</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
 
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()

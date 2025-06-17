@@ -1,0 +1,8 @@
+﻿@model int  
+@{  
+  ViewData["Title"] = "Toy not found";  
+}  
+
+<h2>Toy not found</h2>  
+<p>The toy with ID @Model does not exist or has been removed.</p>  
+<a href="@Url.Action("Index", "Toy")" class="btn-standard">Back to overview</a>

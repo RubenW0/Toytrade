@@ -4,6 +4,13 @@
     ViewData["Title"] = Model.Name;
 }
 
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
 <div class="detail-page">
     <div class="left-section">
         <h2>@Model.Name</h2>
@@ -15,7 +22,9 @@
     <div class="right-section">
         <div class="user-info">
             <h3>@Model.Username</h3>
-            <button class="btn-standard">View profile</button>
+            <a href="@Url.Action("PublicProfile", "User", new { userId = Model.UserId })" class="btn-standard">
+                View profile
+            </a>
             <p>14 times traded</p>
             <p>4.2/5 stars</p>
 

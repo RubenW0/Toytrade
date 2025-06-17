@@ -3,104 +3,149 @@ using BusinessLogicLayer.IRepositories;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLayer.Repositorys
 {
     public class UserRepository : IUserRepository
     {
         private readonly string _connectionString;
+        private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(IConfiguration configuration)
+        public UserRepository(IConfiguration configuration, ILogger<UserRepository> logger)
         {
             _connectionString = configuration.GetConnectionString("MySqlConnection");
+            _logger = logger;
         }
 
         public string GetUsernameById(int userId)
         {
-            string query = "SELECT username FROM User WHERE id = @userId";
-            using (var connection = new MySqlConnection(_connectionString))
+            try
             {
+                string query = "SELECT username FROM User WHERE id = @userId";
+                using var connection = new MySqlConnection(_connectionString);
                 connection.Open();
-                using (var cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.Parameters.AddWithValue("@userId", userId);
-                    var result = cmd.ExecuteScalar();
-                    return result?.ToString();
-                }
+                using var cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@userId", userId);
+                var result = cmd.ExecuteScalar();
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while retrieving username for user with ID {userId}.");
+                throw;
             }
         }
 
         public UserDTO AuthenticateUser(string username)
         {
-            string query = "SELECT id, username, password, address FROM User WHERE username = @username";
-
-            using (var connection = new MySqlConnection(_connectionString))
+            try
             {
+                string query = "SELECT id, username, password, address FROM User WHERE username = @username";
+
+                using var connection = new MySqlConnection(_connectionString);
                 connection.Open();
-                using (var cmd = new MySqlCommand(query, connection))
+                using var cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@username", username);
+
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@username", username);
-
-                    using (var reader = cmd.ExecuteReader())
+                    return new UserDTO
                     {
-                        if (reader.Read())
-                        {
-                            return new UserDTO
-                            {
-                                Id = reader.GetInt32("id"),
-                                Username = reader.GetString("username"),
-                                Password = reader.GetString("password"), 
-                                Address = reader.GetString("address")
-                            };
-                        }
-                    }
+                        Id = reader.GetInt32("id"),
+                        Username = reader.GetString("username"),
+                        Password = reader.GetString("password"),
+                        Address = reader.GetString("address")
+                    };
                 }
+
+                return null;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while authenticating user with username {username}.");
+                throw;
+            }
         }
-
 
         public void AddUser(UserDTO user)
         {
-            using var connection = new MySqlConnection(_connectionString);
-            connection.Open();
+            try
+            {
+                string query = "INSERT INTO user (username, password, address) VALUES (@username, @password, @address)";
+                using var connection = new MySqlConnection(_connectionString);
+                connection.Open();
+                using var cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@username", user.Username);
+                cmd.Parameters.AddWithValue("@password", user.Password);
+                cmd.Parameters.AddWithValue("@address", user.Address);
 
-            var query = "INSERT INTO user (username, password, address) VALUES (@username, @password, @address)";
-            using var cmd = new MySqlCommand(query, connection);
-            cmd.Parameters.AddWithValue("@username", user.Username);
-            cmd.Parameters.AddWithValue("@password", user.Password);
-            cmd.Parameters.AddWithValue("@address", user.Address);
-
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding user.");
+                throw;
+            }
         }
 
         public List<UserDTO> GetAllUsers()
         {
-            var users = new List<UserDTO>();
-            string query = "SELECT id, username, password, address FROM User";
-            using (var connection = new MySqlConnection(_connectionString))
+            try
             {
+                var users = new List<UserDTO>();
+                string query = "SELECT id, username, password, address FROM User";
+                using var connection = new MySqlConnection(_connectionString);
                 connection.Open();
-                using (var cmd = new MySqlCommand(query, connection))
+                using var cmd = new MySqlCommand(query, connection);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    users.Add(new UserDTO
                     {
-                        while (reader.Read())
-                        {
-                            users.Add(new UserDTO
-                            {
-                                Id = reader.GetInt32("id"),
-                                Username = reader.GetString("username"),
-                                Password = reader.GetString("password"),
-                                Address = reader.GetString("address")
-                            });
-                        }
-                    }
+                        Id = reader.GetInt32("id"),
+                        Username = reader.GetString("username"),
+                        Password = reader.GetString("password"),
+                        Address = reader.GetString("address")
+                    });
                 }
+                return users;
             }
-            return users;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving all users.");
+                throw;
+            }
         }
 
+        public UserDTO GetUserById(int userId)
+        {
+            try
+            {
+                string query = "SELECT id, username, password, address FROM User WHERE id = @userId";
+                using var connection = new MySqlConnection(_connectionString);
+                connection.Open();
+                using var cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@userId", userId);
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new UserDTO
+                    {
+                        Id = reader.GetInt32("id"),
+                        Username = reader.GetString("username"),
+                        Password = reader.GetString("password"),
+                        Address = reader.GetString("address")
+                    };
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while retrieving user with ID {userId}.");
+                throw;
+            }
+        }
     }
 }

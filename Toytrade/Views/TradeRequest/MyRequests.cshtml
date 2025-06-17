@@ -4,7 +4,14 @@
     <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />
 }
 
-<h1>My Trade Requests</h1>
+<h2>My Trade Requests</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
 
 @foreach (var request in Model)
 {

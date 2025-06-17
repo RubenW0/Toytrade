@@ -3,6 +3,11 @@
 <div class="container" style="max-width: 400px; margin: auto;">
     <h2 style="text-align: center; color: #d99873;">Login</h2>
 
+    @if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
     <form method="post" action="/User/Login" style="display: flex; flex-direction: column; gap: 15px;">
         <div>
             <label asp-for="Username" class="form-label">Username:</label>
@@ -16,10 +21,6 @@
 
         <button class="btn btn-standard" type="submit">Login</button>
 
-        @if (ViewBag.Error != null)
-        {
-            <p style="color:red; font-weight: bold;">@ViewBag.Error</p>
-        }
     </form>
 
     <div style="text-align: center; margin-top: 15px;">

@@ -3,6 +3,7 @@ using BusinessLogicLayer.IRepositories;
 using Microsoft.Extensions.Hosting; 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace BusinessLogicLayer.Services
 {
@@ -11,37 +12,50 @@ namespace BusinessLogicLayer.Services
         private readonly IToyRepository _toyRepository;
         private readonly IUserRepository _userRepository;
         private readonly IHostEnvironment? _env;
+        private readonly ILogger<ToyService> _logger;
 
-
-        public ToyService(IToyRepository toyRepository, IUserRepository userRepository, IHostEnvironment? env = null)
+        public ToyService(IToyRepository toyRepository, IUserRepository userRepository, ILogger<ToyService> logger, IHostEnvironment? env = null)
         {
             _toyRepository = toyRepository;
             _userRepository = userRepository;
             _env = env;
+            _logger = logger;
         }
 
         public List<ToyDTO> GetAllToys()
         {
-            var toys = _toyRepository.GetAllToys();
-
-            foreach (var toy in toys)
+            try
             {
-                toy.Username = _userRepository.GetUsernameById(toy.UserId);
+                var toys = _toyRepository.GetAllToys();
+                foreach (var toy in toys)
+                {
+                    toy.Username = _userRepository.GetUsernameById(toy.UserId);
+                }
+                return toys;
             }
-
-            return toys;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while retrieving all toys in service.");
+                throw;
+            }
         }
 
         public List<ToyDTO> GetToysByUserId(int userId)
         {
-            var toys = _toyRepository.GetToysByUserId(userId);
-
-            foreach (var toy in toys)
+            try
             {
-                toy.Username = _userRepository.GetUsernameById(toy.UserId);
+                var toys = _toyRepository.GetToysByUserId(userId);
+                foreach (var toy in toys)
+                {
+                    toy.Username = _userRepository.GetUsernameById(toy.UserId);
+                }
+                return toys;
             }
-
-            return toys;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while retrieving toys for user {userId} in service.");
+                throw;
+            }
         }
 
         public ToyDTO GetToyById(int toyId)
@@ -49,66 +63,81 @@ namespace BusinessLogicLayer.Services
             return _toyRepository.GetToyById(toyId);
         }
 
-
         public void AddToy(ToyDTO toy)
         {
-            if (toy.ImageFile != null && toy.ImageFile.Length > 0)
+            try
             {
-                string uploadsFolder = Path.Combine(_env.ContentRootPath, "wwwroot", "images");
-                Directory.CreateDirectory(uploadsFolder);
-
-                string uniqueFileName = Guid.NewGuid() + Path.GetExtension(toy.ImageFile.FileName);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                if (toy.ImageFile != null && toy.ImageFile.Length > 0)
                 {
+                    string uploadsFolder = Path.Combine(_env.ContentRootPath, "wwwroot", "images");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid() + Path.GetExtension(toy.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
                     toy.ImageFile.CopyTo(stream);
+
+                    toy.ImagePath = "/images/" + uniqueFileName;
                 }
 
-                toy.ImagePath = "/images/" + uniqueFileName;
+                _toyRepository.AddToy(toy);
             }
-
-            _toyRepository.AddToy(toy);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding toy in service.");
+                throw;
+            }
         }
-
 
         public void UpdateToy(ToyDTO toy)
         {
-            if (toy.ImageFile != null && toy.ImageFile.Length > 0)
+            try
             {
-                string uploadsFolder = Path.Combine(_env.ContentRootPath, "wwwroot", "images");
-                Directory.CreateDirectory(uploadsFolder);
-
-                string uniqueFileName = Guid.NewGuid() + Path.GetExtension(toy.ImageFile.FileName);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                if (toy.ImageFile != null && toy.ImageFile.Length > 0)
                 {
+                    string uploadsFolder = Path.Combine(_env.ContentRootPath, "wwwroot", "images");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid() + Path.GetExtension(toy.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
                     toy.ImageFile.CopyTo(stream);
+
+                    toy.ImagePath = "/images/" + uniqueFileName;
                 }
 
-                toy.ImagePath = "/images/" + uniqueFileName;
+                _toyRepository.UpdateToy(toy);
             }
-
-            _toyRepository.UpdateToy(toy);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while updating toy with ID {toy.Id} in service.");
+                throw;
+            }
         }
-
 
         public void DeleteToy(int toyId)
         {
-            var toy = _toyRepository.GetAllToys().FirstOrDefault(t => t.Id == toyId);
-            if (toy != null && !string.IsNullOrEmpty(toy.ImagePath))
+            try
             {
-                string fullPath = Path.Combine(_env.ContentRootPath, "wwwroot", toy.ImagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
-                if (File.Exists(fullPath))
+                var toy = _toyRepository.GetAllToys().FirstOrDefault(t => t.Id == toyId);
+                if (toy != null && !string.IsNullOrEmpty(toy.ImagePath))
                 {
-                    File.Delete(fullPath);
+                    string fullPath = Path.Combine(_env.ContentRootPath, "wwwroot", toy.ImagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (File.Exists(fullPath))
+                    {
+                        File.Delete(fullPath);
+                    }
                 }
+
+                _toyRepository.DeleteToy(toyId);
             }
-
-            _toyRepository.DeleteToy(toyId);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while deleting toy with ID {toyId} in service.");
+                throw;
+            }
         }
-
-
     }
 }

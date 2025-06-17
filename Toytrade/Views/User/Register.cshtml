@@ -3,6 +3,12 @@
 <div class="container" style="max-width: 500px; margin: auto;">
     <h2 style="text-align: center; color: #d99873;">Register</h2>
 
+    @if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+
     <form asp-action="Register" method="post" style="display: flex; flex-direction: column; gap: 15px;">
         <div>
             <label asp-for="Username" class="form-label"></label>
