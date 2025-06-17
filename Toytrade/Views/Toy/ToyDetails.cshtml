@@ -1,42 +1,50 @@
-﻿@model PresentationLayer.Models.ToyViewModel
+﻿@model PresentationLayer.Models.ToyViewModel  
 
-@{
-    ViewData["Title"] = Model.Name;
-}
+@{  
+   ViewData["Title"] = Model.Name;  
+}  
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewBag.Error
-    </div>
-}
+@if (ViewBag.Error != null)  
+{  
+   <div class="alert alert-danger" role="alert">  
+       @ViewBag.Error  
+   </div>  
+}  
 
-<div class="detail-page">
-    <div class="left-section">
-        <h2>@Model.Name</h2>
-        <p><strong>Condition:</strong> @Model.Condition</p>
-        <img src="@Model.Image" alt="@Model.Name" class="toy-detail-image" />
-        <p><strong>Description:</strong> (descripiton when available)</p>
-    </div>
+<div class="detail-page">  
+   <div class="left-section">  
+       <h2>@Model.Name</h2>  
+       <p><strong>Condition:</strong> @Model.Condition</p>  
+       <img src="@Model.Image" alt="@Model.Name" class="toy-detail-image" />  
+       <p><strong>Description:</strong> (descripiton when available)</p>  
+   </div>  
 
-    <div class="right-section">
-        <div class="user-info">
-            <h3>@Model.Username</h3>
-            <a href="@Url.Action("PublicProfile", "User", new { userId = Model.UserId })" class="btn-standard">
-                View profile
-            </a>
-            <p>14 times traded</p>
-            <p>4.2/5 stars</p>
+   <div class="right-section">  
+       <div class="user-info">  
+           <h3>@Model.Username</h3>  
+           <a href="@Url.Action("PublicProfile", "User", new { userId = Model.UserId })" class="btn-standard">  
+               View profile  
+           </a>  
+           <p>14 times traded</p>  
+           <p>4.2/5 stars</p>  
 
-            <a href="@Url.Action("Create", "TradeRequest", new { chosenToyId = Model.Id })" class="btn-standard">
-                Submit a Trade Request
-            </a>
+           @{  
+               var currentUserIdString = Context.Session.GetString("UserId");  
+               bool isOwnToy = !string.IsNullOrEmpty(currentUserIdString) && int.Parse(currentUserIdString) == Model.UserId;  
+           }  
 
-        </div>
+           @if (!isOwnToy)  
+           {  
+               <a href="@Url.Action("Create", "TradeRequest", new { chosenToyId = Model.Id })" class="btn-standard">  
+                   Submit a Trade Request  
+               </a>  
+           }  
 
-        <div class="other-swaps">
-            <h4>Other traderequests</h4>
+       </div>  
 
-        </div>
-    </div>
+       <div class="other-swaps">  
+           <h4>Other traderequests</h4>  
+
+       </div>  
+   </div>  
 </div>
