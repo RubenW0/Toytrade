@@ -19,5 +19,10 @@ namespace BusinessLogicLayerTest.FakeUserRepositorys
         };
 
         public string GetUsernameById(int userId) => userId == 1 ? "SingleUser" : null;
+
+        public UserDTO GetUserById(int userId)
+        {
+            return null;
+        }
     }
 }

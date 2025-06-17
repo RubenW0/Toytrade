@@ -2,6 +2,8 @@
 using BusinessLogicLayer.Services;
 using BusinessLogicLayerTest.FakeUserRepositorys;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging.Abstractions;
+
 
 namespace BusinessLogicLayerTest.ServiceTests
 {
@@ -34,7 +36,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             var user = repo.AuthenticateUser("SingleUser");
             user.Password = "hashed-correctpassword";
 
-            var service = new UserService(repo, hasher);
+            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
 
             // Act
             var result = service.Login("SingleUser", "wrongpassword");
@@ -49,8 +51,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var repo = new FakeUserRepository_Empty();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher);
-
+            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
             // Act
             var result = service.Login("NonExistent", "password");
 
@@ -64,7 +65,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var repo = new FakeUserRepository_TwoUsers();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher);
+            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
 
             var newUser = new UserDTO { Id = 3, Username = "User3", Password = "plaintext" };
 
@@ -83,7 +84,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var repo = new FakeUserRepository_TwoUsers();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher);
+            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
 
             // Act
             List<UserDTO> users = service.GetAllUsers();
@@ -100,7 +101,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var repo = new FakeUserRepository_Empty();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher);
+            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
 
             // Act
             List<UserDTO> users = service.GetAllUsers();

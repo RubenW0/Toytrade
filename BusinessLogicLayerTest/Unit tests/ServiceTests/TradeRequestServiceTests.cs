@@ -3,6 +3,8 @@ using BusinessLogicLayer.Services;
 using BusinessLogicLayerTest.FakeTradeRequestRepos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
+
 
 namespace BusinessLogicLayerTest.ServiceTests
 {
@@ -15,7 +17,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var tradeRequestRepo = new FakeTradeRequestRepository_Empty();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
 
             // Act
             var result = service.GetTradeRequestsByUserId(1);
@@ -31,7 +33,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
 
             // Act
             var result = service.GetTradeRequestsByUserId(1);
@@ -58,7 +60,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var tradeRequestRepo = new FakeTradeRequestRepository_SingleRequest();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
 
             // Act
             var result = service.GetTradeRequestsByUserId(1);
@@ -79,7 +81,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
 
             // Act
             int newId = service.CreateTradeRequest(1, 2, new List<int> { 101 }, new List<int> { 201 });
@@ -94,7 +96,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
 
             // Act
             service.RespondToTradeRequest(5, true);
@@ -110,7 +112,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
 
             // Act
             service.RespondToTradeRequest(6, false);

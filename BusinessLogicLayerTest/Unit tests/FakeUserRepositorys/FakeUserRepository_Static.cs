@@ -28,4 +28,9 @@ public class FakeUserRepository_Static : IUserRepository
     {
         return new List<UserDTO>();
     }
+
+    public UserDTO GetUserById(int userId)
+    {
+        return null;
+    }
 }

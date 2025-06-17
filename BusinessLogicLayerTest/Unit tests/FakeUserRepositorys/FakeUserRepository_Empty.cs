@@ -15,5 +15,10 @@ namespace BusinessLogicLayerTest.FakeUserRepositorys
         public List<UserDTO> GetAllUsers() => new List<UserDTO>();
 
         public string GetUsernameById(int userId) => null;
+
+        public UserDTO GetUserById(int userId)
+        {
+            return null;
+        }
     }
 }

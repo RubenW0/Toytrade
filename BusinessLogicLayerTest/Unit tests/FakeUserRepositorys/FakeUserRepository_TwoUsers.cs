@@ -31,5 +31,10 @@ namespace BusinessLogicLayerTest.FakeUserRepositorys
             if (userId == 2) return "User2";
             return null;
         }
+
+        public UserDTO GetUserById(int userId)
+        {
+            return null;
+        }
     }
 }

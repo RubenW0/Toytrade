@@ -2,6 +2,8 @@
 using BusinessLogicLayer.Services;
 using BusinessLogicLayerTest.FakeToysRepo_s;
 using BusinessLogicLayerTest.FakeToysRepos;
+using Microsoft.Extensions.Logging.Abstractions;
+
 
 namespace BusinessLogicLayerTest.ServiceTests
 {
@@ -14,7 +16,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange  
             var toyRepo = new FakeToyRepository_TwoToys();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
 
             // Act  
             var result = service.GetAllToys();
@@ -30,7 +32,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange  
             var toyRepo = new FakeToyRepository_Empty();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
 
             // Act  
             var result = service.GetAllToys();
@@ -45,7 +47,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange  
             var toyRepo = new FakeToyRepository_TwoToys();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
 
             // Act  
             var result = service.GetToysByUserId(1);
@@ -61,7 +63,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange  
             var toyRepo = new FakeToyRepository_Empty();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
 
             // Act  
             var result = service.GetToysByUserId(99);
@@ -76,8 +78,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange  
             var toyRepo = new FakeToyRepository_TwoToys();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
-
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
             // Act  
             var result = service.GetToyById(1);
 
@@ -92,8 +93,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             // Arrange  
             var toyRepo = new FakeToyRepository_Empty();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
-
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
             // Act  
             var result = service.GetToyById(123);
 
@@ -108,8 +108,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             var toy = new ToyDTO { Id = 5, Name = "Puzzle", UserId = 3 };
             var toyRepo = new FakeToyRepository_RecordsAdd();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
-
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
             // Act  
             service.AddToy(toy);
 
@@ -125,8 +124,7 @@ namespace BusinessLogicLayerTest.ServiceTests
             var toy = new ToyDTO { Id = 1, Name = "UpdatedName", UserId = 1 };
             var toyRepo = new FakeToyRepository_RecordsUpdate();
             var userRepo = new FakeUserRepository_Static();
-            var service = new ToyService(toyRepo, userRepo);
-
+            var service = new ToyService(toyRepo, userRepo, NullLogger<ToyService>.Instance, new FakeHostEnvironment());
             // Act  
             service.UpdateToy(toy);
 
