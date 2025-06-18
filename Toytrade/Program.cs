@@ -4,8 +4,18 @@ using DataAccessLayer.Repositorys;
 using BusinessLogicLayer.Services;
 using BusinessLogicLayer.IRepositories;
 using BusinessLogicLayer.DTOs;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Error()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
+
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
 // Test database verbinding

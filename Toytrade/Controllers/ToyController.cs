@@ -3,16 +3,19 @@ using BusinessLogicLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models.Enums;
 using PresentationLayer.Models;
+using System.Runtime.CompilerServices;
 
 namespace PresentationLayer.Controllers
 {
     public class ToyController : Controller
     {
         private readonly ToyService _toyService;
+        private readonly ILogger<ToyController> _logger;
 
-        public ToyController(ToyService toyService)
+        public ToyController(ToyService toyService, ILogger<ToyController> logger)
         {
             _toyService = toyService;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -34,8 +37,8 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while loading toys");
                 ViewBag.Error = "An error occurred while loading the toys.";
-                Console.WriteLine(ex);
                 return View(new List<ToyViewModel>());
             }
         }
@@ -85,8 +88,7 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error while adding toy: " + ex.ToString());
-
+                LogErrorWithMethodName(ex, "Error while adding toy");
                 ViewBag.Error = "An error occurred while adding the toy. Please try again later.";
                 return View(model);
             }
@@ -136,8 +138,8 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while editing toy");
                 ViewBag.Error = "An error occurred while editing the toy.";
-                Console.WriteLine(ex);
                 return View(model);
             }
         }
@@ -145,8 +147,17 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _toyService.DeleteToy(id);
-            return RedirectToAction("Index");
+            try
+            {
+                _toyService.DeleteToy(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                LogErrorWithMethodName(ex, "Error while deleting toy");
+                ViewBag.Error = "An error occurred while deleting the toy.";
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult MyToys()
@@ -176,8 +187,8 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while retrieving user toys");
                 ViewBag.Error = "An error occurred while retrieving your toys.";
-                Console.WriteLine(ex);
                 return View(new List<ToyViewModel>());
             }
         }
@@ -185,25 +196,42 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var toyDTO = _toyService.GetAllToys().FirstOrDefault(t => t.Id == id);
-
-            if (toyDTO == null)
+            try
             {
+                var toyDTO = _toyService.GetAllToys().FirstOrDefault(t => t.Id == id);
+
+                if (toyDTO == null)
+                {
+                    return View("ToyNotFound", id);
+                }
+
+                var toyViewModel = new ToyViewModel
+                {
+                    Id = toyDTO.Id,
+                    Name = toyDTO.Name,
+                    Condition = Enum.TryParse<ToyCondition>(toyDTO.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                    Image = toyDTO.ImagePath,
+                    Username = toyDTO.Username,
+                    UserId = toyDTO.UserId
+                };
+
+                return View("ToyDetails", toyViewModel);
+            }
+            catch (Exception ex)
+            {
+                LogErrorWithMethodName(ex, "Error while retrieving toy details");
+                ViewBag.Error = "An error occurred while retrieving the toy details.";
                 return View("ToyNotFound", id);
             }
-
-            var toyViewModel = new ToyViewModel
-            {
-                Id = toyDTO.Id,
-                Name = toyDTO.Name,
-                Condition = Enum.TryParse<ToyCondition>(toyDTO.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                Image = toyDTO.ImagePath,
-                Username = toyDTO.Username,
-                UserId = toyDTO.UserId
-            };
-
-            return View("ToyDetails", toyViewModel);
         }
 
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [System.Runtime.CompilerServices.CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+
+            _logger.LogError(ex, msg);
+        }
     }
 }

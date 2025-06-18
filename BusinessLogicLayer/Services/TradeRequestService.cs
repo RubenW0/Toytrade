@@ -22,6 +22,14 @@ namespace BusinessLogicLayer.Services
             _logger = logger;
         }
 
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [System.Runtime.CompilerServices.CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+            _logger.LogError(ex, msg);
+        }
+
         public List<TradeRequestDTO> GetTradeRequestsByUserId(int userId)
         {
             try
@@ -41,7 +49,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving trade requests for user {userId} in service.");
+                LogErrorWithMethodName(ex, $"Error while retrieving trade requests for user {userId} in service.");
                 throw;
             }
         }
@@ -54,7 +62,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while creating trade request in service.");
+                LogErrorWithMethodName(ex, "Error while creating trade request in service.");
                 throw;
             }
         }
@@ -68,7 +76,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while responding to trade request with ID {requestId} in service.");
+                LogErrorWithMethodName(ex, $"Error while responding to trade request with ID {requestId} in service.");
                 throw;
             }
         }

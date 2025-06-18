@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace BusinessLogicLayer.Services
 {
@@ -22,6 +23,15 @@ namespace BusinessLogicLayer.Services
             _logger = logger;
         }
 
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+
+            _logger.LogError(ex, msg);
+        }
+
         public List<ToyDTO> GetAllToys()
         {
             try
@@ -35,7 +45,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving all toys in service.");
+                LogErrorWithMethodName(ex, "Error while retrieving all toys in service.");
                 throw;
             }
         }
@@ -53,7 +63,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving toys for user {userId} in service.");
+                LogErrorWithMethodName(ex, $"Error while retrieving toys for user {userId} in service.");
                 throw;
             }
         }
@@ -85,7 +95,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while adding toy in service.");
+                LogErrorWithMethodName(ex, "Error while adding toy in service.");
                 throw;
             }
         }
@@ -112,7 +122,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while updating toy with ID {toy.Id} in service.");
+                LogErrorWithMethodName(ex, $"Error while updating toy with ID {toy.Id} in service.");
                 throw;
             }
         }
@@ -135,7 +145,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while deleting toy with ID {toyId} in service.");
+                LogErrorWithMethodName(ex, $"Error while deleting toy with ID {toyId} in service.");
                 throw;
             }
         }

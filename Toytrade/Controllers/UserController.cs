@@ -12,11 +12,13 @@ namespace PresentationLayer.Controllers
     {
         private readonly UserService _userService;
         private readonly ToyService _toyService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(UserService userService, ToyService toyService)
+        public UserController(UserService userService, ToyService toyService, ILogger<UserController> logger)
         {
             _userService = userService;
             _toyService = toyService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -49,31 +51,49 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while processing login");
                 ViewBag.Error = "An error occurred while processing your request. Please try again later.";
-                Console.WriteLine(ex);
                 return View(model);
             }
         }
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login", "User");
+            try
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "User");
+            }
+            catch (Exception ex)
+            {
+                LogErrorWithMethodName(ex, "Error while logging out");
+                ViewBag.Error = "An error occurred while logging out.";
+                return RedirectToAction("Login", "User");
+            }
         }
 
         public IActionResult Profile()
         {
-            var model = new ProfileViewModel
+            try
             {
-                Username = HttpContext.Session.GetString("Username")
-            };
+                var model = new ProfileViewModel
+                {
+                    Username = HttpContext.Session.GetString("Username")
+                };
 
-            if (string.IsNullOrEmpty(model.Username))
+                if (string.IsNullOrEmpty(model.Username))
+                {
+                    return RedirectToAction("Login", "User");
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while loading profile");
+                ViewBag.Error = "An error occurred while loading your profile.";
                 return RedirectToAction("Login", "User");
             }
-
-            return View(model);
         }
 
         [HttpGet]
@@ -105,8 +125,8 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while registering user");
                 ViewBag.Error = "An error occurred while registering the user. Please try again later.";
-                Console.WriteLine(ex);
                 return View(model);
             }
         }
@@ -139,12 +159,20 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "Error while loading public profile");
                 ViewBag.Error = "Could not load profile.";
-                Console.WriteLine(ex);
                 return View(new PublicProfileViewModel());
             }
         }
 
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [System.Runtime.CompilerServices.CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+
+            _logger.LogError(ex, msg);
+        }
     }
 }
 

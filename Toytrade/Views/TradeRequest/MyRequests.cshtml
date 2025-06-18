@@ -1,100 +1,115 @@
-﻿@model List<PresentationLayer.Models.TradeRequestViewModel>
+﻿@model List<PresentationLayer.Models.TradeRequestViewModel>  
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />
-}
+@section Styles {  
+   <link rel="stylesheet" href="~/css/toy-list.css" asp-append-version="true" />  
+}  
 
-<h2>My Trade Requests</h2>
+<h2>My Trade Requests</h2>  
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewBag.Error
-    </div>
-}
+@if (ViewBag.Error != null)  
+{  
+   <div class="alert alert-danger" role="alert">  
+       @ViewBag.Error  
+   </div>  
+}  
+@foreach (var request in Model)  
+{  
+   var toyNames = string.Join(", ", request.OfferedToys.Select(t => t.Name)) + " → " +  
+                  string.Join(", ", request.RequestedToys.Select(t => t.Name));  
+   var lastUpdated = request.RespondedAt.HasValue && request.RespondedAt.Value > request.CreatedAt  
+       ? request.RespondedAt.Value  
+       : request.CreatedAt;  
 
-@foreach (var request in Model)
-{
-    <div class="trade-request-card">
-        <div class="trade-request-info">
-            <p><strong>Status:</strong> @request.Status</p>
-            <p><strong>From:</strong> @request.RequesterUsername</p>
-            <p><strong>To:</strong> @request.ReceiverUsername</p>
-            <p><strong>Created:</strong> @request.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
-            @if (request.RespondedAt.HasValue)
-            {
-                <p><strong>Responded:</strong> @request.RespondedAt.Value.ToString("dd MMM yyyy HH:mm")</p>
-            }
-            else
-            {
-                <p><strong>Responded:</strong> Not yet responded</p>
-            }
-        </div>
+   <div class="trade-request-card-collapsible">  
+       <div class="trade-request-summary" onclick="toggleDetails(this)">  
+           <div class="summary-left">  
+               <p><strong>@request.RequesterUsername</strong> ↔ <strong>@request.ReceiverUsername</strong></p>  
+               <p><strong>Status:</strong> @request.Status</p>  
+               <p><strong>Last updated:</strong> @lastUpdated.ToString("dd MMM yyyy HH:mm")</p>  
+           </div>  
+           <div class="summary-right">  
+               <p>@toyNames</p>  
+               <span class="toggle-icon">▼</span>  
+           </div>  
+       </div>  
 
-        <div>
-            <h5>Offered Toys</h5>
-            <div class="toy-card-container">
-                @foreach (var toy in request.OfferedToys)
-                {
-                    <a asp-controller="Toy" asp-action="Details" asp-route-id="@toy.Id" class="toy-card-link">
-                        <div class="toy-card">
-                            <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />
-                            <div class="toy-info">
-                                <h3>@toy.Name</h3>
-                                <p><strong>Condition:</strong> @toy.Condition</p>
-                                <p><strong>Owner:</strong> @toy.Username</p>
-                            </div>
-                        </div>
-                    </a>
-                }
-            </div>
-        </div>
+       <div class="trade-request-details">  
+           <p><strong>Status:</strong> @request.Status</p>  
+           <p><strong>From:</strong> @request.RequesterUsername</p>  
+           <p><strong>To:</strong> @request.ReceiverUsername</p>  
+           <p><strong>Created:</strong> @request.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>  
+           <p><strong>Responded:</strong> @(request.RespondedAt.HasValue ? request.RespondedAt.Value.ToString("dd MMM yyyy HH:mm") : "Not yet responded")</p>  
 
-        <div>
-            <h5>Requested Toys</h5>
-            <div class="toy-card-container">
-                @foreach (var toy in request.RequestedToys)
-                {
-                    <a asp-controller="Toy" asp-action="Details" asp-route-id="@toy.Id" class="toy-card-link">
-                        <div class="toy-card">
-                            <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />
-                            <div class="toy-info">
-                                <h3>@toy.Name</h3>
-                                <p><strong>Condition:</strong> @toy.Condition</p>
-                                <p><strong>Owner:</strong> @toy.Username</p>
-                            </div>
-                        </div>
-                    </a>
-                }
-            </div>
-        </div>
+           <h5>Offered Toys</h5>  
+           <div class="toy-card-container">  
+               @foreach (var toy in request.OfferedToys)  
+               {  
+                   <a asp-controller="Toy" asp-action="Details" asp-route-id="@toy.Id" class="toy-card-link">  
+                       <div class="toy-card">  
+                           <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />  
+                           <div class="toy-info">  
+                               <h3>@toy.Name</h3>  
+                               <p><strong>Condition:</strong> @toy.Condition</p>  
+                               <p><strong>Owner:</strong> @toy.Username</p>  
+                           </div>  
+                       </div>  
+                   </a>  
+               }  
+           </div>  
 
-        <div class="trade-request-actions">
-            @if (request.Status == "Pending")
-            {
-                if (request.ReceiverUsername == request.Username)
-                {
-                    <form asp-controller="TradeRequest" asp-action="Respond" method="post" style="display:inline;">
-                        <input type="hidden" name="requestId" value="@request.Id" />
-                        <input type="hidden" name="response" value="accept" />
-                        <button type="submit" class="btn btn-success">Accept</button>
-                    </form>
+           <h5>Requested Toys</h5>  
+           <div class="toy-card-container">  
+               @foreach (var toy in request.RequestedToys)  
+               {  
+                   <a asp-controller="Toy" asp-action="Details" asp-route-id="@toy.Id" class="toy-card-link">  
+                       <div class="toy-card">  
+                           <img src="@toy.Image" alt="@toy.Name" class="toy-image" asp-append-version="true" />  
+                           <div class="toy-info">  
+                               <h3>@toy.Name</h3>  
+                               <p><strong>Condition:</strong> @toy.Condition</p>  
+                               <p><strong>Owner:</strong> @toy.Username</p>  
+                           </div>  
+                       </div>  
+                   </a>  
+               }  
+           </div>  
 
-                    <form asp-controller="TradeRequest" asp-action="Respond" method="post" style="display:inline;">
-                        <input type="hidden" name="requestId" value="@request.Id" />
-                        <input type="hidden" name="response" value="decline" />
-                        <button type="submit" class="btn btn-danger">Decline</button>
-                    </form>
-                }
-                else
-                {
-                    <p><em>Waiting for response from @request.ReceiverUsername...</em></p>
-                }
-            }
-            else
-            {
-                <p><strong>Final Status:</strong> @request.Status</p>
-            }
-        </div>
-    </div>
+           <div class="trade-request-actions">  
+               @if (request.Status == "Pending")  
+               {  
+                   if (request.ReceiverUsername == request.Username)  
+                   {  
+                       <form asp-controller="TradeRequest" asp-action="Respond" method="post" style="display:inline;">  
+                           <input type="hidden" name="requestId" value="@request.Id" />  
+                           <input type="hidden" name="response" value="accept" />  
+                           <button type="submit" class="btn btn-success">Accept</button>  
+                       </form>  
+
+                       <form asp-controller="TradeRequest" asp-action="Respond" method="post" style="display:inline;">  
+                           <input type="hidden" name="requestId" value="@request.Id" />  
+                           <input type="hidden" name="response" value="decline" />  
+                           <button type="submit" class="btn btn-danger">Decline</button>  
+                       </form>  
+                   }  
+                   else  
+                   {  
+                       <p><em>Waiting for response from @request.ReceiverUsername...</em></p>  
+                   }  
+               }  
+               else  
+               {  
+                   <p><strong>Final Status:</strong> @request.Status</p>  
+               }  
+           </div>  
+       </div>  
+   </div>  
+}  
+
+@section Scripts {  
+   <script>  
+       function toggleDetails(summaryElement) {  
+           const card = summaryElement.closest('.trade-request-card-collapsible');  
+           card.classList.toggle('expanded');  
+       }  
+   </script>  
 }

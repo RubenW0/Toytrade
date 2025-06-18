@@ -23,6 +23,14 @@ namespace BusinessLogicLayer.Services
             _logger = logger;
         }
 
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [System.Runtime.CompilerServices.CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+            _logger.LogError(ex, msg);
+        }
+
         public UserDTO Login(string username, string password)
         {
             try
@@ -38,7 +46,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while logging in user '{username}' in service.");
+                LogErrorWithMethodName(ex, $"Error while logging in user '{username}' in service.");
                 throw;
             }
         }
@@ -52,7 +60,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while registering user '{user.Username}' in service.");
+                LogErrorWithMethodName(ex, $"Error while registering user '{user.Username}' in service.");
                 throw;
             }
         }
@@ -65,7 +73,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving all users in service.");
+                LogErrorWithMethodName(ex, "Error while retrieving all users in service.");
                 throw;
             }
         }
@@ -78,7 +86,7 @@ namespace BusinessLogicLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving user with ID {userId} in service.");
+                LogErrorWithMethodName(ex, $"Error while retrieving user with ID {userId} in service.");
                 throw;
             }
         }

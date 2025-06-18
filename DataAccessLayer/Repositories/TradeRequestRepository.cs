@@ -4,6 +4,7 @@ using BusinessLogicLayer.IRepositories;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 public class TradeRequestRepository : ITradeRequestRepository
 {
@@ -11,9 +12,18 @@ public class TradeRequestRepository : ITradeRequestRepository
     private readonly ILogger<TradeRequestRepository> _logger;
 
     public TradeRequestRepository(IConfiguration configuration, ILogger<TradeRequestRepository> logger)
-    {   
+    {
         _connectionString = configuration.GetConnectionString("MySqlConnection");
         _logger = logger;
+    }
+
+    private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [CallerMemberName] string callerName = "")
+    {
+        var msg = $"Exception in {callerName}";
+        if (!string.IsNullOrEmpty(extraMessage))
+            msg += $": {extraMessage}";
+
+        _logger.LogError(ex, msg);
     }
 
     public List<ToyDTO> GetOfferedToysByTradeRequestId(int tradeRequestId)
@@ -22,10 +32,10 @@ public class TradeRequestRepository : ITradeRequestRepository
         {
             var toys = new List<ToyDTO>();
             string query =
-                @"SELECT t.id, t.name, t.image_path  
-               FROM toy t  
-               JOIN traderequest_offeredtoy ot ON t.id = ot.toy_id  
-               WHERE ot.traderequest_id = @tradeRequestId";
+                @"SELECT t.id, t.name, t.image_path    
+              FROM toy t    
+              JOIN traderequest_offeredtoy ot ON t.id = ot.toy_id    
+              WHERE ot.traderequest_id = @tradeRequestId";
 
             using var connection = new MySqlConnection(_connectionString);
             connection.Open();
@@ -46,7 +56,7 @@ public class TradeRequestRepository : ITradeRequestRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error while retrieving offered toys for trade request ID {tradeRequestId}.");
+            LogErrorWithMethodName(ex, $"Error while retrieving offered toys for trade request ID {tradeRequestId}.");
             throw;
         }
     }
@@ -56,10 +66,10 @@ public class TradeRequestRepository : ITradeRequestRepository
         try
         {
             var toys = new List<ToyDTO>();
-            string query = @"SELECT t.id, t.name, t.image_path  
-                        FROM toy t  
-                        JOIN traderequest_requestedtoy rt ON t.id = rt.toy_id  
-                        WHERE rt.traderequest_id = @tradeRequestId";
+            string query = @"SELECT t.id, t.name, t.image_path    
+                       FROM toy t    
+                       JOIN traderequest_requestedtoy rt ON t.id = rt.toy_id    
+                       WHERE rt.traderequest_id = @tradeRequestId";
 
             using var connection = new MySqlConnection(_connectionString);
             connection.Open();
@@ -80,7 +90,7 @@ public class TradeRequestRepository : ITradeRequestRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error while retrieving requested toys for trade request ID {tradeRequestId}.");
+            LogErrorWithMethodName(ex, $"Error while retrieving requested toys for trade request ID {tradeRequestId}.");
             throw;
         }
     }
@@ -90,9 +100,9 @@ public class TradeRequestRepository : ITradeRequestRepository
         try
         {
             var requests = new List<TradeRequestDTO>();
-            string query = @"SELECT id, status, user_id_requester, user_id_receiver, created_at, responded_at  
-                         FROM traderequest  
-                         WHERE user_id_requester = @userId OR user_id_receiver = @userId";
+            string query = @"SELECT id, status, user_id_requester, user_id_receiver, created_at, responded_at    
+                        FROM traderequest    
+                        WHERE user_id_requester = @userId OR user_id_receiver = @userId";
 
             using var connection = new MySqlConnection(_connectionString);
             connection.Open();
@@ -118,11 +128,10 @@ public class TradeRequestRepository : ITradeRequestRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error while retrieving trade requests for user ID {userId}.");
+            LogErrorWithMethodName(ex, $"Error while retrieving trade requests for user ID {userId}.");
             throw;
         }
     }
-
 
     public int CreateTradeRequest(int requesterId, int receiverId, List<int> offeredToyIds, List<int> requestedToyIds)
     {
@@ -133,10 +142,10 @@ public class TradeRequestRepository : ITradeRequestRepository
             connection.Open();
             using var transaction = connection.BeginTransaction();
 
-            string insertTradeRequestQuery = @"  
-               INSERT INTO traderequest (status, user_id_requester, user_id_receiver)  
-               VALUES ('Pending', @requesterId, @receiverId);  
-               SELECT LAST_INSERT_ID();";
+            string insertTradeRequestQuery = @"    
+              INSERT INTO traderequest (status, user_id_requester, user_id_receiver)    
+              VALUES ('Pending', @requesterId, @receiverId);    
+              SELECT LAST_INSERT_ID();";
 
             using (var cmd = new MySqlCommand(insertTradeRequestQuery, connection, transaction))
             {
@@ -145,9 +154,9 @@ public class TradeRequestRepository : ITradeRequestRepository
                 tradeRequestId = Convert.ToInt32(cmd.ExecuteScalar());
             }
 
-            string insertOfferedToyQuery = @"  
-               INSERT INTO traderequest_offeredtoy (toy_id, traderequest_id)  
-               VALUES (@toyId, @tradeRequestId)";
+            string insertOfferedToyQuery = @"    
+              INSERT INTO traderequest_offeredtoy (toy_id, traderequest_id)    
+              VALUES (@toyId, @tradeRequestId)";
             foreach (var toyId in offeredToyIds)
             {
                 using var cmd = new MySqlCommand(insertOfferedToyQuery, connection, transaction);
@@ -156,9 +165,9 @@ public class TradeRequestRepository : ITradeRequestRepository
                 cmd.ExecuteNonQuery();
             }
 
-            string insertRequestedToyQuery = @"  
-               INSERT INTO traderequest_requestedtoy (toy_id, traderequest_id)  
-               VALUES (@toyId, @tradeRequestId)";
+            string insertRequestedToyQuery = @"    
+              INSERT INTO traderequest_requestedtoy (toy_id, traderequest_id)    
+              VALUES (@toyId, @tradeRequestId)";
             foreach (var toyId in requestedToyIds)
             {
                 using var cmd = new MySqlCommand(insertRequestedToyQuery, connection, transaction);
@@ -172,7 +181,7 @@ public class TradeRequestRepository : ITradeRequestRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while creating trade request.");
+            LogErrorWithMethodName(ex, "Error while creating trade request.");
             throw;
         }
     }
@@ -181,10 +190,9 @@ public class TradeRequestRepository : ITradeRequestRepository
     {
         try
         {
-            string query = @"UPDATE traderequest 
-                 SET status = @newStatus, responded_at = NOW() 
-                 WHERE id = @tradeRequestId";
-
+            string query = @"UPDATE traderequest   
+                SET status = @newStatus, responded_at = NOW()   
+                WHERE id = @tradeRequestId";
 
             using var connection = new MySqlConnection(_connectionString);
             connection.Open();
@@ -195,7 +203,7 @@ public class TradeRequestRepository : ITradeRequestRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error while updating trade request status for ID {tradeRequestId}.");
+            LogErrorWithMethodName(ex, $"Error while updating trade request status for ID {tradeRequestId}.");
             throw;
         }
     }

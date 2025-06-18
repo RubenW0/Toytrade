@@ -12,11 +12,13 @@ namespace PresentationLayer.Controllers
     {
         private readonly TradeRequestService _tradeRequestService;
         private readonly ToyService _toyService;
+        private readonly ILogger<TradeRequestController> _logger;
 
-        public TradeRequestController(TradeRequestService tradeRequestService, ToyService toyService)
+        public TradeRequestController(TradeRequestService tradeRequestService, ToyService toyService, ILogger<TradeRequestController> logger)
         {
             _tradeRequestService = tradeRequestService;
             _toyService = toyService;
+            _logger = logger;
         }
 
         public IActionResult MyRequests()
@@ -35,39 +37,41 @@ namespace PresentationLayer.Controllers
                 var toyDTOs = _toyService.GetAllToys().ToList();
                 var requests = _tradeRequestService.GetTradeRequestsByUserId(userId);
 
-                var viewModelList = requests.Select(request => new TradeRequestViewModel
-                {
-                    Id = request.Id,
-                    Status = request.Status.ToString(),
-                    RequesterUsername = request.RequesterUsername,
-                    ReceiverUsername = request.ReceiverUsername,
-                    Username = currentUsername,
-                    CreatedAt = request.CreatedAt, 
-                    RespondedAt = request.RespondedAt, 
-                    OfferedToys = request.OfferedToys.Select(toy => new ToyViewModel
+                var viewModelList = requests
+                    .OrderByDescending(r => r.RespondedAt ?? r.CreatedAt)
+                    .Select(request => new TradeRequestViewModel
                     {
-                        Id = toy.Id,
-                        Name = toy.Name,
-                        Image = toy.Image,
-                        Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                        Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
-                    }).ToList(),
-                    RequestedToys = request.RequestedToys.Select(toy => new ToyViewModel
-                    {
-                        Id = toy.Id,
-                        Name = toy.Name,
-                        Image = toy.Image,
-                        Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
-                        Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
-                    }).ToList()
-                }).ToList();
+                        Id = request.Id,
+                        Status = request.Status.ToString(),
+                        RequesterUsername = request.RequesterUsername,
+                        ReceiverUsername = request.ReceiverUsername,
+                        Username = currentUsername,
+                        CreatedAt = request.CreatedAt,
+                        RespondedAt = request.RespondedAt,
+                        OfferedToys = request.OfferedToys.Select(toy => new ToyViewModel
+                        {
+                            Id = toy.Id,
+                            Name = toy.Name,
+                            Image = toy.Image,
+                            Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                            Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
+                        }).ToList(),
+                        RequestedToys = request.RequestedToys.Select(toy => new ToyViewModel
+                        {
+                            Id = toy.Id,
+                            Name = toy.Name,
+                            Image = toy.Image,
+                            Condition = Enum.TryParse<ToyCondition>(toy.Condition, out var parsedCondition) ? parsedCondition : ToyCondition.Used,
+                            Username = toyDTOs.FirstOrDefault(t => t.Id == toy.Id)?.Username
+                        }).ToList()
+                    }).ToList();
 
                 return View(viewModelList);
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "An error occurred while retrieving trade requests.");
                 ViewBag.Error = "An error occurred while retrieving your trade requests.";
-                Console.WriteLine(ex);
                 return View(new List<TradeRequestViewModel>());
             }
         }
@@ -135,8 +139,8 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "An error occurred while preparing the trade request.");
                 ViewBag.Error = "An error occurred while preparing the trade request.";
-                Console.WriteLine(ex);
                 return View(new TradeRequestCreateViewModel());
             }
         }
@@ -203,12 +207,11 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, "An error occurred while creating the trade request.");
                 ViewBag.Error = "An error occurred while creating the trade request.";
-                Console.WriteLine(ex);
                 return View(model);
             }
         }
-        
 
         [HttpPost]
         public IActionResult Respond(int requestId, string response)
@@ -228,10 +231,19 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
+                LogErrorWithMethodName(ex, $"An error occurred while responding to the trade request with ID {requestId}.");
                 ViewBag.Error = "An error occurred while responding to the trade request.";
-                Console.WriteLine(ex);
                 return RedirectToAction("MyRequests");
             }
+        }
+
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [System.Runtime.CompilerServices.CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+
+            _logger.LogError(ex, msg);
         }
     }
 }

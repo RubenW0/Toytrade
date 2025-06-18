@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace DataAccessLayer.Repositorys
 {
@@ -16,6 +17,15 @@ namespace DataAccessLayer.Repositorys
         {
             _connectionString = configuration.GetConnectionString("MySqlConnection");
             _logger = logger;
+        }
+
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+
+            _logger.LogError(ex, msg);
         }
 
         public List<ToyDTO> GetAllToys()
@@ -45,7 +55,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving all toys.");
+                LogErrorWithMethodName(ex, "Error while retrieving all toys.");
                 throw;
             }
         }
@@ -78,7 +88,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving toys for user with ID {userId}.");
+                LogErrorWithMethodName(ex, $"Error while retrieving toys for user with ID {userId}.");
                 throw;
             }
         }
@@ -110,7 +120,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving toy with ID {toyId}.");
+                LogErrorWithMethodName(ex, $"Error while retrieving toy with ID {toyId}.");
                 throw;
             }
         }
@@ -131,7 +141,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while adding toy.");
+                LogErrorWithMethodName(ex, "Error while adding toy.");
                 throw;
             }
         }
@@ -159,7 +169,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while updating toy with ID {toy.Id}.");
+                LogErrorWithMethodName(ex, $"Error while updating toy with ID {toy.Id}.");
                 throw;
             }
         }
@@ -177,7 +187,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while deleting toy with ID {toyId}.");
+                LogErrorWithMethodName(ex, $"Error while deleting toy with ID {toyId}.");
                 throw;
             }
         }

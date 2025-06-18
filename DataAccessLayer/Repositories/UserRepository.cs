@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace DataAccessLayer.Repositorys
 {
@@ -16,6 +17,15 @@ namespace DataAccessLayer.Repositorys
         {
             _connectionString = configuration.GetConnectionString("MySqlConnection");
             _logger = logger;
+        }
+
+        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [CallerMemberName] string callerName = "")
+        {
+            var msg = $"Exception in {callerName}";
+            if (!string.IsNullOrEmpty(extraMessage))
+                msg += $": {extraMessage}";
+
+            _logger.LogError(ex, msg);
         }
 
         public string GetUsernameById(int userId)
@@ -32,7 +42,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving username for user with ID {userId}.");
+                LogErrorWithMethodName(ex, $"Error while retrieving username for user with ID {userId}.");
                 throw;
             }
         }
@@ -64,7 +74,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while authenticating user with username {username}.");
+                LogErrorWithMethodName(ex, $"Error while authenticating user with username {username}.");
                 throw;
             }
         }
@@ -85,7 +95,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while adding user.");
+                LogErrorWithMethodName(ex, "Error while adding user.");
                 throw;
             }
         }
@@ -114,7 +124,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while retrieving all users.");
+                LogErrorWithMethodName(ex, "Error while retrieving all users.");
                 throw;
             }
         }
@@ -143,7 +153,7 @@ namespace DataAccessLayer.Repositorys
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error while retrieving user with ID {userId}.");
+                LogErrorWithMethodName(ex, $"Error while retrieving user with ID {userId}.");
                 throw;
             }
         }
