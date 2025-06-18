@@ -79,7 +79,7 @@ namespace BusinessLogicLayerTest.IntegrationTests
             var toy = new ToyDTO
             {
                 Name = "Test Toy",
-                Condition = "Nieuw",
+                Condition = "New",
                 UserId = 1 
             };
 
@@ -95,7 +95,7 @@ namespace BusinessLogicLayerTest.IntegrationTests
             var toy = new ToyDTO
             {
                 Name = "To Be Deleted",
-                Condition = "Gebruikt",
+                Condition = "Used",
                 UserId = 1
             };
 
@@ -112,8 +112,8 @@ namespace BusinessLogicLayerTest.IntegrationTests
         [TestMethod]
         public void GetAllToys_ShouldReturnMultipleToys()
         {
-            _toyService.AddToy(new ToyDTO { Name = "Toy 1", Condition = "Nieuw", UserId = 1 });
-            _toyService.AddToy(new ToyDTO { Name = "Toy 2", Condition = "Gebruikt", UserId = 1 });
+            _toyService.AddToy(new ToyDTO { Name = "Toy 1", Condition = "New", UserId = 1 });
+            _toyService.AddToy(new ToyDTO { Name = "Toy 2", Condition = "Used", UserId = 1 });
 
             var result = _toyService.GetAllToys();
 

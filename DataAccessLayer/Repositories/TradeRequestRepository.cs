@@ -90,9 +90,9 @@ public class TradeRequestRepository : ITradeRequestRepository
         try
         {
             var requests = new List<TradeRequestDTO>();
-            string query = @"SELECT id, status, user_id_requester, user_id_receiver  
-                        FROM traderequest  
-                        WHERE user_id_requester = @userId OR user_id_receiver = @userId";
+            string query = @"SELECT id, status, user_id_requester, user_id_receiver, created_at, responded_at  
+                         FROM traderequest  
+                         WHERE user_id_requester = @userId OR user_id_receiver = @userId";
 
             using var connection = new MySqlConnection(_connectionString);
             connection.Open();
@@ -106,7 +106,11 @@ public class TradeRequestRepository : ITradeRequestRepository
                     Id = reader.GetInt32("id"),
                     Status = Enum.Parse<TradeRequestStatus>(reader.GetString("status")),
                     RequesterId = reader.GetInt32("user_id_requester"),
-                    ReceiverId = reader.GetInt32("user_id_receiver")
+                    ReceiverId = reader.GetInt32("user_id_receiver"),
+                    CreatedAt = reader.GetDateTime("created_at"),
+                    RespondedAt = reader.IsDBNull(reader.GetOrdinal("responded_at"))
+                                  ? (DateTime?)null
+                                  : reader.GetDateTime("responded_at")
                 });
             }
 
@@ -118,6 +122,7 @@ public class TradeRequestRepository : ITradeRequestRepository
             throw;
         }
     }
+
 
     public int CreateTradeRequest(int requesterId, int receiverId, List<int> offeredToyIds, List<int> requestedToyIds)
     {
@@ -176,7 +181,10 @@ public class TradeRequestRepository : ITradeRequestRepository
     {
         try
         {
-            string query = @"UPDATE traderequest SET status = @newStatus WHERE id = @tradeRequestId";
+            string query = @"UPDATE traderequest 
+                 SET status = @newStatus, responded_at = NOW() 
+                 WHERE id = @tradeRequestId";
+
 
             using var connection = new MySqlConnection(_connectionString);
             connection.Open();

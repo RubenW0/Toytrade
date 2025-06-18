@@ -20,6 +20,15 @@
             <p><strong>Status:</strong> @request.Status</p>
             <p><strong>From:</strong> @request.RequesterUsername</p>
             <p><strong>To:</strong> @request.ReceiverUsername</p>
+            <p><strong>Created:</strong> @request.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
+            @if (request.RespondedAt.HasValue)
+            {
+                <p><strong>Responded:</strong> @request.RespondedAt.Value.ToString("dd MMM yyyy HH:mm")</p>
+            }
+            else
+            {
+                <p><strong>Responded:</strong> Not yet responded</p>
+            }
         </div>
 
         <div>

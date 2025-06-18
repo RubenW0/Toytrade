@@ -11,8 +11,13 @@ namespace BusinessLogicLayer.DTOs
     {
         public int Id { get; set; }
         public TradeRequestStatus Status { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? RespondedAt { get; set; }
+
+
         public int RequesterId { get; set; }
         public int ReceiverId { get; set; }
+
 
         public string RequesterUsername { get; set; }
         public string ReceiverUsername { get; set; }

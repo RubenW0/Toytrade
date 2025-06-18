@@ -10,7 +10,10 @@ namespace PresentationLayer.Models
         public string Status { get; set; }
         public string RequesterUsername { get; set; }
         public string ReceiverUsername { get; set; }
-        public string Username { get; set; } 
+        public string Username { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? RespondedAt { get; set; }
+
 
         public List<ToyViewModel> OfferedToys { get; set; }
         public List<ToyViewModel> RequestedToys { get; set; }
