@@ -25,54 +25,54 @@ namespace BusinessLogicLayerTest.ServiceTests
             }
         }
 
-
         [TestMethod]
         public void Login_WrongPassword_ReturnsNull()
         {
-            // Arrange
+            // Arrange  
             var repo = new FakeUserRepository_OneUser();
             var hasher = new FakePasswordHasher();
 
             var user = repo.AuthenticateUser("SingleUser");
             user.Password = "hashed-correctpassword";
 
-            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
+            var service = new UserService(repo, hasher);
 
-            // Act
+            // Act  
             var result = service.Login("SingleUser", "wrongpassword");
 
-            // Assert
+            // Assert  
             Assert.IsNull(result);
         }
 
         [TestMethod]
         public void Login_UserDoesNotExist_ReturnsNull()
         {
-            // Arrange
+            // Arrange  
             var repo = new FakeUserRepository_Empty();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
-            // Act
+            var service = new UserService(repo, hasher);
+
+            // Act  
             var result = service.Login("NonExistent", "password");
 
-            // Assert
+            // Assert  
             Assert.IsNull(result);
         }
 
         [TestMethod]
         public void Register_UserIsHashedAndAdded()
         {
-            // Arrange
+            // Arrange  
             var repo = new FakeUserRepository_TwoUsers();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
+            var service = new UserService(repo, hasher);
 
             var newUser = new UserDTO { Id = 3, Username = "User3", Password = "plaintext" };
 
-            // Act
+            // Act  
             service.Register(newUser);
 
-            // Assert
+            // Assert  
             Assert.IsNotNull(repo.AddedUser);
             Assert.AreEqual("User3", repo.AddedUser.Username);
             Assert.AreEqual("hashed-plaintext", repo.AddedUser.Password);
@@ -81,15 +81,15 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void GetAllUsers_FromRepoWithTwoUsers_ReturnsTwoUsers()
         {
-            // Arrange
+            // Arrange  
             var repo = new FakeUserRepository_TwoUsers();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
+            var service = new UserService(repo, hasher);
 
-            // Act
+            // Act  
             List<UserDTO> users = service.GetAllUsers();
 
-            // Assert
+            // Assert  
             Assert.AreEqual(2, users.Count);
             Assert.AreEqual("User1", users[0].Username);
             Assert.AreEqual("User2", users[1].Username);
@@ -98,15 +98,15 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void GetAllUsers_FromEmptyRepo_ReturnsEmptyList()
         {
-            // Arrange
+            // Arrange  
             var repo = new FakeUserRepository_Empty();
             var hasher = new FakePasswordHasher();
-            var service = new UserService(repo, hasher, NullLogger<UserService>.Instance);
+            var service = new UserService(repo, hasher);
 
-            // Act
+            // Act  
             List<UserDTO> users = service.GetAllUsers();
 
-            // Assert
+            // Assert  
             Assert.IsNotNull(users);
             Assert.AreEqual(0, users.Count);
         }

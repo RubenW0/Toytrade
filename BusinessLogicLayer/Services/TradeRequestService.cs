@@ -13,72 +13,38 @@ namespace BusinessLogicLayer.Services
     {
         private readonly ITradeRequestRepository _tradeRequestRepository;
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<TradeRequestService> _logger;
 
-        public TradeRequestService(ITradeRequestRepository tradeRequestRepository, IUserRepository userRepository, ILogger<TradeRequestService> logger)
+        public TradeRequestService(ITradeRequestRepository tradeRequestRepository, IUserRepository userRepository)
         {
             _tradeRequestRepository = tradeRequestRepository;
             _userRepository = userRepository;
-            _logger = logger;
-        }
-
-        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [System.Runtime.CompilerServices.CallerMemberName] string callerName = "")
-        {
-            var msg = $"Exception in {callerName}";
-            if (!string.IsNullOrEmpty(extraMessage))
-                msg += $": {extraMessage}";
-            _logger.LogError(ex, msg);
         }
 
         public List<TradeRequestDTO> GetTradeRequestsByUserId(int userId)
         {
-            try
+            var requests = _tradeRequestRepository.GetTradeRequestsByUserId(userId);
+
+            foreach (var req in requests)
             {
-                var requests = _tradeRequestRepository.GetTradeRequestsByUserId(userId);
+                req.RequesterUsername = _userRepository.GetUsernameById(req.RequesterId);
+                req.ReceiverUsername = _userRepository.GetUsernameById(req.ReceiverId);
 
-                foreach (var req in requests)
-                {
-                    req.RequesterUsername = _userRepository.GetUsernameById(req.RequesterId);
-                    req.ReceiverUsername = _userRepository.GetUsernameById(req.ReceiverId);
-
-                    req.OfferedToys = _tradeRequestRepository.GetOfferedToysByTradeRequestId(req.Id);
-                    req.RequestedToys = _tradeRequestRepository.GetRequestedToysByTradeRequestId(req.Id);
-                }
-
-                return requests;
+                req.OfferedToys = _tradeRequestRepository.GetOfferedToysByTradeRequestId(req.Id);
+                req.RequestedToys = _tradeRequestRepository.GetRequestedToysByTradeRequestId(req.Id);
             }
-            catch (Exception ex)
-            {
-                LogErrorWithMethodName(ex, $"Error while retrieving trade requests for user {userId} in service.");
-                throw;
-            }
+
+            return requests;
         }
 
         public int CreateTradeRequest(int requesterId, int receiverId, List<int> offeredToyIds, List<int> requestedToyIds)
         {
-            try
-            {
-                return _tradeRequestRepository.CreateTradeRequest(requesterId, receiverId, offeredToyIds, requestedToyIds);
-            }
-            catch (Exception ex)
-            {
-                LogErrorWithMethodName(ex, "Error while creating trade request in service.");
-                throw;
-            }
+            return _tradeRequestRepository.CreateTradeRequest(requesterId, receiverId, offeredToyIds, requestedToyIds);
         }
 
         public void RespondToTradeRequest(int requestId, bool accept)
         {
-            try
-            {
-                var newStatus = accept ? "Accepted" : "Declined";
-                _tradeRequestRepository.UpdateTradeRequestStatus(requestId, newStatus);
-            }
-            catch (Exception ex)
-            {
-                LogErrorWithMethodName(ex, $"Error while responding to trade request with ID {requestId} in service.");
-                throw;
-            }
+            var newStatus = accept ? "Accepted" : "Declined";
+            _tradeRequestRepository.UpdateTradeRequestStatus(requestId, newStatus);
         }
     }
 }

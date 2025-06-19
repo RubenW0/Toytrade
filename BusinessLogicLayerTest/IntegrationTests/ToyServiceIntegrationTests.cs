@@ -47,15 +47,6 @@ namespace BusinessLogicLayerTest.IntegrationTests
 
             _toyService = _serviceProvider.GetRequiredService<ToyService>();
 
-            Console.WriteLine($"Aantal toys vóór ClearToyTable:");
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-                using var cmd = new MySqlCommand("SELECT COUNT(*) FROM Toy", connection);
-                var count = Convert.ToInt32(cmd.ExecuteScalar());
-                Console.WriteLine(count);
-            }
-
             Console.WriteLine($"Using connection string: {_connectionString}");
 
             ClearToyTable();
@@ -67,10 +58,6 @@ namespace BusinessLogicLayerTest.IntegrationTests
             connection.Open();
             using var cmd = new MySqlCommand("DELETE FROM Toy", connection);
             cmd.ExecuteNonQuery();
-
-            using var cmdCheck = new MySqlCommand("SELECT COUNT(*) FROM Toy", connection);
-            var count = Convert.ToInt32(cmdCheck.ExecuteScalar());
-            Console.WriteLine($"Aantal toys na clear: {count}");
         }
 
         [TestMethod]

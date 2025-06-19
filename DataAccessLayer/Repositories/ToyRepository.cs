@@ -3,7 +3,6 @@ using BusinessLogicLayer.IRepositories;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
 namespace DataAccessLayer.Repositorys
@@ -11,21 +10,10 @@ namespace DataAccessLayer.Repositorys
     public class ToyRepository : IToyRepository
     {
         private readonly string _connectionString;
-        private readonly ILogger<ToyRepository> _logger;
 
-        public ToyRepository(IConfiguration configuration, ILogger<ToyRepository> logger)
+        public ToyRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("MySqlConnection");
-            _logger = logger;
-        }
-
-        private void LogErrorWithMethodName(Exception ex, string? extraMessage = null, [CallerMemberName] string callerName = "")
-        {
-            var msg = $"Exception in {callerName}";
-            if (!string.IsNullOrEmpty(extraMessage))
-                msg += $": {extraMessage}";
-
-            _logger.LogError(ex, msg);
         }
 
         public List<ToyDTO> GetAllToys()
@@ -53,9 +41,8 @@ namespace DataAccessLayer.Repositorys
 
                 return toys;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogErrorWithMethodName(ex, "Error while retrieving all toys.");
                 throw;
             }
         }
@@ -86,9 +73,8 @@ namespace DataAccessLayer.Repositorys
 
                 return toys;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogErrorWithMethodName(ex, $"Error while retrieving toys for user with ID {userId}.");
                 throw;
             }
         }
@@ -118,9 +104,8 @@ namespace DataAccessLayer.Repositorys
 
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogErrorWithMethodName(ex, $"Error while retrieving toy with ID {toyId}.");
                 throw;
             }
         }
@@ -139,9 +124,8 @@ namespace DataAccessLayer.Repositorys
                 cmd.Parameters.AddWithValue("@userId", toy.UserId);
                 cmd.ExecuteNonQuery();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogErrorWithMethodName(ex, "Error while adding toy.");
                 throw;
             }
         }
@@ -167,9 +151,8 @@ namespace DataAccessLayer.Repositorys
 
                 cmd.ExecuteNonQuery();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogErrorWithMethodName(ex, $"Error while updating toy with ID {toy.Id}.");
                 throw;
             }
         }
@@ -185,9 +168,8 @@ namespace DataAccessLayer.Repositorys
                 cmd.Parameters.AddWithValue("@id", toyId);
                 cmd.ExecuteNonQuery();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogErrorWithMethodName(ex, $"Error while deleting toy with ID {toyId}.");
                 throw;
             }
         }

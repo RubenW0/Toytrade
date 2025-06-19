@@ -14,15 +14,15 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void GetTradeRequestsByUserId_EmptyRepo_ReturnsEmptyList()
         {
-            // Arrange
+            // Arrange  
             var tradeRequestRepo = new FakeTradeRequestRepository_Empty();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo);
 
-            // Act
+            // Act  
             var result = service.GetTradeRequestsByUserId(1);
 
-            // Assert
+            // Assert  
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
         }
@@ -30,15 +30,15 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void GetTradeRequestsByUserId_RecordsRepo_ReturnsRequestsWithUsernamesAndToys()
         {
-            // Arrange
+            // Arrange  
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo);
 
-            // Act
+            // Act  
             var result = service.GetTradeRequestsByUserId(1);
 
-            // Assert
+            // Assert  
             Assert.AreEqual(2, result.Count);
 
             var first = result[0];
@@ -57,15 +57,15 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void GetTradeRequestsByUserId_SingleRequestRepo_ReturnsOneRequestWithUsernamesAndToys()
         {
-            // Arrange
+            // Arrange  
             var tradeRequestRepo = new FakeTradeRequestRepository_SingleRequest();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo);
 
-            // Act
+            // Act  
             var result = service.GetTradeRequestsByUserId(1);
 
-            // Assert
+            // Assert  
             Assert.AreEqual(1, result.Count);
 
             var request = result[0];
@@ -78,30 +78,30 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void CreateTradeRequest_RecordsRepo_ReturnsCreatedRequestId()
         {
-            // Arrange
+            // Arrange  
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo);
 
-            // Act
+            // Act  
             int newId = service.CreateTradeRequest(1, 2, new List<int> { 101 }, new List<int> { 201 });
 
-            // Assert
+            // Assert  
             Assert.AreEqual(99, newId);
         }
 
         [TestMethod]
         public void RespondToTradeRequest_RecordsRepo_UpdatesStatusAccepted()
         {
-            // Arrange
+            // Arrange  
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo);
 
-            // Act
+            // Act  
             service.RespondToTradeRequest(5, true);
 
-            // Assert
+            // Assert  
             Assert.AreEqual(5, tradeRequestRepo.LastUpdatedRequestId);
             Assert.AreEqual("Accepted", tradeRequestRepo.LastStatus);
         }
@@ -109,15 +109,15 @@ namespace BusinessLogicLayerTest.ServiceTests
         [TestMethod]
         public void RespondToTradeRequest_RecordsRepo_UpdatesStatusDeclined()
         {
-            // Arrange
+            // Arrange  
             var tradeRequestRepo = new FakeTradeRequestRepository_Records();
             var userRepo = new FakeUserRepository_Static();
-            var service = new TradeRequestService(tradeRequestRepo, userRepo, NullLogger<TradeRequestService>.Instance);
+            var service = new TradeRequestService(tradeRequestRepo, userRepo);
 
-            // Act
+            // Act  
             service.RespondToTradeRequest(6, false);
 
-            // Assert
+            // Assert  
             Assert.AreEqual(6, tradeRequestRepo.LastUpdatedRequestId);
             Assert.AreEqual("Declined", tradeRequestRepo.LastStatus);
         }
